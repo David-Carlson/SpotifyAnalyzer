@@ -23,8 +23,11 @@ object PasswordHash {
     val hash = createSaltedHash(password)
     println(createSaltedHash(password))
     println(validatePassword(password, createSaltedHash(password)))
+
+    println(simpleHash(password))
   }
 
+  def simpleHash(password: String): String = password.md5
 
   def createSaltedHash(password: String): String = {
     createSaltedHash(password.toCharArray())

@@ -1,17 +1,18 @@
 package Scraper
-import MusicObject.Track.toCSV
 import MusicObject.{Album, Artist, Playlist, Track}
-
+import Platform.PasswordHash.simpleHash
 import scala.collection.mutable
 
 object DataWriter {
-  val verbose = false
   // Update this whenever the output format changes
   val version = "1.0.0"
+  val verbose = false
 
   def main(args: Array[String]): Unit = {
-    val usernames = sys.env("users").split("\\|").toList
-    collectAndWriteAllData(usernames, "scrappy_joe")
+//    val usernames = sys.env("users").split("\\|").toList
+    val usernames = "doctorsalt|1249049206|tchheou".split("\\|").toList
+    val scraperName = "scrappy_joe"
+    collectAndWriteAllData(usernames, scraperName)
   }
   // doctorsalt|1249049206|tchheou
 
@@ -54,7 +55,7 @@ object DataWriter {
     val scraperPath = os.pwd/"spotifydata"/scraperName/"scraper_data"
     val timestamp = java.time.LocalDateTime.now
     val schemas = List(Album.getSchema(), Artist.getSchema(), Playlist.getSchema(), Track.getSchema(), version)
-    val versionHash = schemas.mkString.hashCode
+    val versionHash = simpleHash(schemas.mkString)
     // TODO: Change to multiple usernames
     val manifestTxt = List(
       s"Music supplied by users: ${users.mkString(", ")}",
