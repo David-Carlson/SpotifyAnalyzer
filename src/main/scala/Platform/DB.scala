@@ -1,0 +1,5 @@
+package Platform
+
+object DB {
+
+}
