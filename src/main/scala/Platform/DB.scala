@@ -1,10 +1,14 @@
 package Platform
 
+import org.apache.spark.SparkContext._
 import org.apache.spark.SparkContext
 import org.apache.spark.sql.SparkSession
 
 object DB {
   private var sparkSession: SparkSession = null
+  val tableNames = List("genre", "album", "artist", "owner", "playlist", "track", "album_artists",
+    "album_tracks", "artist_genres", "playlist_tracks", "track_artists")
+
   def getSparkSession(): SparkSession = {
     if (sparkSession == null) {
       println("Creating SparkSession")
@@ -21,22 +25,58 @@ object DB {
     sparkSession
   }
   def main(args: Array[String]): Unit = {
-    val scraperName = "smallest"
+    val crawlerName = "smallest"
+    Analysis.averageAlbumTrackLength()
+//    setupDatabase(crawlerName)
+//    sparkTest()
+  }
 
-    val path = os.pwd/"spotifydata"/scraperName/"music_data"
-//    val filenames = List("genre", "album", "album_artists", "album_tracks", "artist",
-//      "artist_genres", "owner", "playlist", "playlist_tracks", "track", "track_artists")
-    val filenames = List("genre")
-//    println(filenames.forall(f => os.exists(path / s"$f.txt")))
-//    println(path)
-    genre()
-    filenames.foreach(inputFileIntoTable(scraperName, _))
+  def sparkTest(): Unit = {
+    val spark = getSparkSession()
+    val album_tracks = spark.sqlContext.table("album_tracks")
+    val album = spark.sqlContext.table("album")
+    val track = spark.sqlContext.table("track")
+//    album
+//      .join(album_tracks, "id")
+//      .join(track, album_tracks("track_id") === track("id"))
+//      .show()
+    spark.sql("SELECT a.name, a.tracks, COUNT(*) FROM album a JOIN album_tracks at ON a.id=at.id " +
+      "JOIN track t on t.id=at.track_id GROUP BY a.name, a.tracks").show()
+
+
+//    df.select("name", "track_number").filter("track_number > 30").show()
+//    println(df.filter("track_number > 30").count())
+    album.printSchema()
+  }
+
+  def setupDatabase(crawlerName: String): Unit = {
+    // Add other tables, login tables
+    val spark = getSparkSession()
+    val filenames = tableNames
+    filenames.foreach{f =>
+      println(f)
+      spark.sqlContext.table(f).printSchema()
+    }
+//    filenames.foreach(dropTable)
+//    createAllTables()
+//    if (canLoadTables(crawlerName, filenames))
+//      filenames.foreach(inputFileIntoTable(crawlerName, _))
+  }
+
+  def canLoadTables(crawlerName: String, fileAndTableNames: List[String]): Boolean = {
+    fileAndTableNames.forall(f => os.exists(os.pwd/"spotifydata"/crawlerName/"music_data"/(f + ".txt")))
+  }
+
+  def createAllTables(): Unit = {
+    val spark = getSparkSession()
+    TableDefinitions.tableSchemas.foreach(spark.sql)
   }
 
   def dropTable(fileAndTableName: String): Unit = {
     val spark = getSparkSession()
     spark.sql(s"DROP table IF EXISTS $fileAndTableName")
   }
+
   def inputFileIntoTable(crawlerName: String, fileAndTableName: String): Unit = {
     val path = os.pwd/"spotifydata"/crawlerName/"music_data"/(fileAndTableName + ".txt")
     val inputStr = os.read.lines.stream(path)
@@ -46,17 +86,10 @@ object DB {
       .mkString(", ")
     val spark = getSparkSession()
     spark.sql(s"INSERT INTO TABLE $fileAndTableName VALUES " + inputStr)
-    spark.sql(s"SELECT * FROM $fileAndTableName").show()
+//    spark.sql(s"SELECT * FROM $fileAndTableName").show()
+//    spark.sql(s"SELECT COUNT(*) FROM $fileAndTableName").show()
   }
-  def genre(): Unit = {
-    val spark = getSparkSession()
-    spark.sql("CREATE TABLE IF NOT EXISTS genre (" +
-      "id INT," +
-      "name VARCHAR(150)) " +
-      "COMMENT 'Gives the full name of a genre' " +
-      "ROW FORMAT DELIMITED FIELDS TERMINATED BY '|' " +
-      "LINES TERMINATED BY '\\n'")
-  }
+
 
   def test(): Unit = {
     val spark = getSparkSession()
@@ -67,24 +100,5 @@ object DB {
     spark.sql("SELECT Count(*) AS TOTALCOUNT FROM BevA").show()
     spark.sql("SELECT Count(*) AS NumBranch2BevAFile FROM BevA WHERE BevA.BranchID='Branch2'").show()
     spark.sql("SELECT * FROM BevA").show()
-  }
-
-
-  def createTables(scraperName: String): Unit = {
-
-    val path = os.pwd/"spotifydata"/scraperName/"music_data"/"genre.txt"
-    val spark = getSparkSession()
-
-    spark.sql("DROP table IF EXISTS genre")
-    spark.sql("CREATE TABLE IF NOT EXISTS genre (" +
-      "id INT," +
-      "name VARCHAR(150)) " +
-      "COMMENT 'Gives the full name of a genre' " +
-      "ROW FORMAT DELIMITED FIELDS TERMINATED BY '|' " +
-      "LINES TERMINATED BY '\\n'")
-    spark.sql("LOAD DATA INPATH '/spotifydata/wall-e/music_data/genre.txt' OVERWRITE INTO TABLE genre")
-    spark.sql("SELECT Count(*) AS TOTALCOUNT FROM genre").show()
-//    spark.sql("SELECT Count(*) AS NumBranch2BevAFile FROM BevA WHERE BevA.BranchID='Branch2'").show()
-    spark.sql("SELECT * FROM genre").show()
   }
 }
