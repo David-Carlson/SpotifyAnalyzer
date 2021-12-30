@@ -1,6 +1,7 @@
 package MusicObject
 
 import ujson.Value
+import Helper.{parseNumOpt, quote, sanitize}
 
 case class Playlist(id: String, name: String, desc: String, owner_id: String,
                     owner_name: String, public: Boolean, followers: Int, track_total: Int, var track_ids: Set[String] = Set[String]()){
@@ -14,11 +15,15 @@ case class Playlist(id: String, name: String, desc: String, owner_id: String,
 object Playlist {
   def toCSV(playlist: Playlist): String = {
     playlist match {
-      case Playlist(id, name, desc, owner_id, owner_name, public, followers, total_tracks, track_ids) =>
-        s"$id|$name|$desc|$owner_id|$public|$followers|$total_tracks"
+      case Playlist(id, name, desc, owner_id, owner_name, public, followers, total_tracks, _) =>
+        val idS = quote(id)
+        val nameS = quote(name)
+        val descS = quote(desc)
+        val owner_idS = quote(owner_id)
+        s"$idS|$nameS|$descS|$owner_idS|$public|$followers|$total_tracks"
     }
   }
-  def getSchema(): String = "$id|$name|$desc|$owner_id|$public|$followers|$total_tracks"
+  def getSchema(): String = "$idS|$nameS|$descS|$owner_idS|$public|$followers|$total_tracks"
 
   def parsePlaylist(i: Value): Option[Playlist] = {
     try {
@@ -35,11 +40,28 @@ object Playlist {
       if (all.exists(_.isEmpty)) {
         println("Playlist fields not obtained: ")
         println(all.map(_.getOrElse("%")).mkString(" | "))
-//        println(i)
         return None
       }
-      Some(Playlist(id.get, name.get.replace('|', ':'), desc.get.replace('|', ':'),
-        owner_id.get, owner_name.get.replace('|', ':'), public.get, followers.get.toInt, track_total.get.toInt))
+
+      Some(Playlist(sanitize(id), sanitize(name), sanitize(desc), sanitize(owner_id), sanitize(owner_name),
+        public.get, parseNumOpt(followers), parseNumOpt(track_total)))
+    } catch {
+      case ex: RuntimeException =>
+        println(s"Runtime Exception parsing: $ex")
+        None
+    }
+  }
+
+  def parsePlaylistID(i: Value, username: String, minSize: Int): Option[String] = {
+    try {
+      val owner_id = i("owner")("id").strOpt.getOrElse("").trim
+      val total_tracks = i("tracks")("total").numOpt.getOrElse(0.0)
+      val id = i("id").strOpt.getOrElse("").trim
+      if (id.nonEmpty && owner_id == username && total_tracks >= minSize) {
+        Some(id)
+      } else {
+        None
+      }
     } catch {
       case ex: RuntimeException =>
         println(s"Runtime Exception parsing: $ex")

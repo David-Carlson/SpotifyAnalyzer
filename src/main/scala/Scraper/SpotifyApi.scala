@@ -2,7 +2,7 @@ package Scraper
 
 import MusicObject.Album.parseAlbum
 import MusicObject.Artist.parseArtist
-import MusicObject.Playlist.parsePlaylist
+import MusicObject.Playlist.{parsePlaylist, parsePlaylistID}
 import MusicObject.Track.{parseAlbumTrack, parsePlaylistTrack}
 import MusicObject.{Album, Artist, Playlist, Track}
 import ujson.Value
@@ -37,12 +37,16 @@ object SpotifyApi {
     ).text)
   }
   def printException(ex: requests.RequestFailedException, title: String): Unit = {
-    val res = ujson.read(ex.response)
-    val status = res("error")("status")
-    val msg = res("error")("message")
-    println(title + "\n")
-    println(s"Status: $status")
-    println(s"Message: $msg")
+    try {
+      val res = ujson.read(ex.response)
+      val status = res("error")("status")
+      val msg = res("error")("message")
+      println(title + "\n")
+      println(s"Status: $status")
+      println(s"Message: $msg")
+    } catch {
+      case ex: Throwable => println(title)
+    }
   }
 
   def getGenreSeeds(): Option[List[String]] = {
@@ -58,7 +62,7 @@ object SpotifyApi {
     }
   }
 
-  def getUserPlaylistIDS(username: String): List[String] = {
+  def getUserPlaylistIDS(username: String, minSize: Int): List[String] = {
     try {
       var nextLink: Option[String] = Some(baseUrl + s"/users/$username/playlists?limit=50")
       Iterator
@@ -67,7 +71,9 @@ object SpotifyApi {
         .flatMap { _ =>
           val json = getJsonDataWithLink(nextLink.get)
           nextLink = json("next").strOpt
-          json("items").arr.map(_("id").strOpt)
+//          json("items").arr.map(_("id").strOpt)
+          json("items").arr
+            .map(i => parsePlaylistID(i, username, minSize))
         }
         .filter(_.isDefined)
         .map(_.get)
@@ -81,7 +87,6 @@ object SpotifyApi {
   }
 
   def getPlaylist(id: String): Option[Playlist] = {
-    println(s"Requesting playlist $id")
     try {
       val link = baseUrl + s"/playlists/${id}"
       parsePlaylist(getJsonDataWithLink(link))
@@ -141,7 +146,7 @@ object SpotifyApi {
         .flatMap { _ =>
           var json = getJsonDataWithLink(nextLink.get)
           nextLink = json("next").strOpt
-          json("items").arr.map(parsePlaylistTrack(_))
+          json("items").arr.map(parsePlaylistTrack)
         }
         .filter(_.isDefined)
         .map(_.get)

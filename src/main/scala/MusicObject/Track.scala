@@ -1,12 +1,11 @@
 package MusicObject
 
+import MusicObject.Helper.{parseArtistField, parseNumOpt, quote, sanitize}
 import ujson.Value
 
-import scala.collection.mutable.ArrayBuffer
-
 case class Track(id: String, name: String, artists: Set[String],
-                 album_id: Option[String], added_at: Option[String],  duration: Int,
-                 track_number: Int, explicit: Boolean, popularity: Option[Int]){
+                 album_id: String, added_at: String,  duration: Int,
+                 track_number: Int, explicit: Boolean, popularity: Int){
   override def equals(o: Any) = o match {
     case that: Track => that.id.equalsIgnoreCase(this.id)
     case _ => false
@@ -18,13 +17,13 @@ object Track {
   def toCSV(track: Track): String = {
     track match {
       case Track(id, name, artists, album_id, added_at, duration, track_number, explicit, popularity) =>
-        val added = added_at.getOrElse("")
-        val pop = popularity.getOrElse("")
-
-        s"$id|$name|$added|$duration|$track_number|$explicit|$pop"
+        val idS = quote(id)
+        val nameS = quote(name)
+        val added_atS = quote(added_at)
+        s"$idS|$nameS|$added_atS|$duration|$track_number|$explicit|$popularity"
     }
   }
-  def getSchema(): String = "$id|$name|$added|$duration|$track_number|$explicit|$pop"
+  def getSchema(): String = "$idS|$nameS|$added_atS|$duration|$track_number|$explicit|$popularity"
 
   def parsePlaylistTrack(i: Value): Option[Track] = {
     try {
@@ -45,8 +44,9 @@ object Track {
         return None
       }
 
-      val managedArtists = parseArtistField(artists)
-      Some(Track(id.get, name.get, managedArtists, album_id, added_at, duration.get.toInt, track_number.get.toInt, explicit.get, Some(popularity.get.toInt)))
+      val managedArtists = Helper.parseArtistField(artists)
+      Some(Track(sanitize(id), sanitize(name), managedArtists, sanitize(album_id), sanitize(added_at),
+        parseNumOpt(duration), parseNumOpt(track_number), explicit.get, parseNumOpt(popularity)))
     } catch {
       case ex: ujson.ParsingFailedException =>
         println("parsing exception", ex)
@@ -73,8 +73,9 @@ object Track {
         println(all.map(_.getOrElse("%")).mkString(" | "))
         return None
       }
-      val managedArtists = parseArtistField(artists)
-      Some(Track(id.get, name.get, managedArtists, album_id, added_at, duration.get.toInt, track_number.get.toInt, explicit.get, popularity))
+      val managedArtists = Helper.parseArtistField(artists)
+      Some(Track(sanitize(id), sanitize(name), managedArtists, sanitize(album_id), sanitize(added_at),
+        parseNumOpt(duration), parseNumOpt(track_number), explicit.get, parseNumOpt(popularity)))
     } catch {
       case ex: ujson.ParsingFailedException =>
         println("parsing exception", ex)
@@ -84,8 +85,8 @@ object Track {
         None
     }
   }
-  def parseArtistField(artists: Option[ArrayBuffer[Value]]): Set[String] = {
-    artists.getOrElse(List.empty).map(_("id").strOpt).filter(_.isDefined).map(_.get).toSet
-  }
+
+
+
 }
 

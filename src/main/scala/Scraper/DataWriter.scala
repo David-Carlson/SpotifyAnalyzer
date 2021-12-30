@@ -1,26 +1,32 @@
 package Scraper
+import MusicObject.Helper.quote
 import MusicObject.{Album, Artist, Playlist, Track}
 import Platform.PasswordHash.simpleHash
+
 import scala.collection.mutable
 
 object DataWriter {
   // Update this whenever the output format changes
-  val version = "1.0.0"
+  val version = "2.0.0"
+  // TODO: Change to env var, use throughout app
   val verbose = false
 
   def main(args: Array[String]): Unit = {
-//    val usernames = sys.env("users").split("\\|").toList
-    val usernames = "doctorsalt|1249049206|tchheou".split("\\|").toList
-    val scraperName = "scrappy_joe"
-    collectAndWriteAllData(usernames, scraperName)
+    val usernames = "doctorsalt".split("\\|").toList
+
+    collectAndWriteAllData(usernames, "smallest", 1, 3, 15)
+
+//    val scraperName = "wall-e"
+//    collectAndWriteAllData(usernames, scraperName, 6, 5, 30)
+
+    //    val usernames = sys.env("users").split("\\|").toList
+//    val usernames = "doctorsalt|1249049206".split("\\|").toList
+//    val scraperName = "scrappy_joe"
+//    collectAndWriteAllData(usernames, scraperName)
   }
   // doctorsalt|1249049206|tchheou
 
-  def collectAndWriteAllData(users: List[String], scraperName: String): Unit = {
-    val playlistsPerUser = 6
-    val minPlaylistSize = 5
-    val maxPlaylistSize = 30
-
+  def collectAndWriteAllData(users: List[String], crawlerName: String, playlistsPerUser: Int, minPlaylistSize: Int, maxPlaylistSize: Int): Unit = {
     val startTime = System.nanoTime()
     val (genreMap, albums, artists, playlists, tracks) = DataCollector.startCollection(users, playlistsPerUser, minPlaylistSize, maxPlaylistSize)
     if (albums.isEmpty || artists.isEmpty || playlists.isEmpty || tracks.isEmpty) {
@@ -33,170 +39,173 @@ object DataWriter {
     println(s"Collection took $collTime seconds")
     println(s"Writing music data for ${users.mkString(", ")}")
 
-    writeGenreMap(genreMap, scraperName)
+    writeGenreMap(genreMap, crawlerName)
 
-    writeAlbums(albums, scraperName)
-    writeAlbumToArtists(albums, scraperName)
-    writeAlbumToTracks(tracks, scraperName)
+    writeAlbums(albums, crawlerName)
+    writeAlbumToArtists(albums, crawlerName)
+    writeAlbumToTracks(tracks, crawlerName)
 
-    writeArtists(artists, scraperName)
-    writeArtistsToGenres(artists, genreMap, scraperName)
+    writeArtists(artists, crawlerName)
+    writeArtistsToGenres(artists, genreMap, crawlerName)
 
-    writePlaylists(playlists, scraperName)
-    writePlaylistsToTracks(playlists, scraperName)
-    writePlaylistOwnerToID(playlists, scraperName)
+    writePlaylists(playlists, crawlerName)
+    writePlaylistsToTracks(playlists, crawlerName)
+    writePlaylistOwnerToID(playlists, crawlerName)
 
-    writeTracks(tracks, scraperName)
-    writeTracksToArtists(tracks, scraperName)
+    writeTracks(tracks, crawlerName)
+    writeTracksToArtists(tracks, crawlerName)
 
     val writeTime = (System.nanoTime() - collTimeStamp) / 1e9d
     println(s"Writing to file took $writeTime seconds")
 
-    val scraperPath = os.pwd/"spotifydata"/scraperName/"scraper_data"
+    val crawlerPath = os.pwd/"spotifydata"/crawlerName
     val timestamp = java.time.LocalDateTime.now
     val schemas = List(Album.getSchema(), Artist.getSchema(), Playlist.getSchema(), Track.getSchema(), version)
     val versionHash = simpleHash(schemas.mkString)
     // TODO: Change to multiple usernames
     val manifestTxt = List(
-      s"Music supplied by users: ${users.mkString(", ")}",
-      s"Scraper Format: #$versionHash",
-      s"Scraped by robot: $scraperName",
-      s"Number of API Requests: ${SpotifyApi.requestCount}\n",
-      s"Number of Playlists: ${playlists.size}",
-      s"Number of Albums: ${albums.size}",
-      s"Number of Artists: ${artists.size}",
-      s"Number of Tracks: ${tracks.size}",
-      s"Number of Genres: ${genreMap.size}\n",
+      s"Music supplied by users  : ${users.mkString(", ")}",
+      s"Crawler Format           : #$versionHash",
+      s"Crawled by robot         : $crawlerName",
+      s"Number of API Requests   : ${SpotifyApi.requestCount}\n",
 
-      s"Allowed playlist sizes: Between $minPlaylistSize and $maxPlaylistSize",
-      s"Playlists taken per user: $playlistsPerUser",
-      s"Created ${timestamp}",
-      s"Time to Scrape data: ${collTime} seconds",
-      s"Time to Write data: ${writeTime} seconds\n"
+      s"Number of Playlists      : ${playlists.size}",
+      s"Number of Albums         : ${albums.size}",
+      s"Number of Artists        : ${artists.size}",
+      s"Number of Tracks         : ${tracks.size}",
+      s"Number of Genres         : ${genreMap.size}\n",
+
+      s"Allowed playlist sizes   : Between $minPlaylistSize and $maxPlaylistSize",
+      s"Playlists taken per user : $playlistsPerUser",
+      s"Time to scrape data      : ${collTime} seconds",
+      s"Time to write data       : ${writeTime} seconds",
+      s"Created                  : ${timestamp}\n"
     )
-    os.write.over(scraperPath/"manifest.txt", manifestTxt.mkString("\n"), createFolders = true)
-    os.write.over(scraperPath/"schemas.txt", getSchemas(), createFolders = true)
+    os.write.over(crawlerPath/"manifest.txt", manifestTxt.mkString("\n"), createFolders = true)
+    os.write.over(crawlerPath/"schemas.txt", getSchemas(), createFolders = true)
   }
 
-  def writeGenreMap(genreMap: Map[String, Int], scraperName: String): Unit = {
+  def writeGenreMap(genreMap: Map[String, Int], crawlerName: String): Unit = {
     try {
-      val path = os.pwd/"spotifydata"/scraperName/"music_data"/"genre.txt"
-      os.write.over(path, genreMap.map { case (g,i) => s"$i|$g"}.mkString("\n"),createFolders = true)
+      val path = os.pwd/"spotifydata"/crawlerName/"music_data"/"genre.txt"
+      os.write.over(path, genreMap.map { case (g,i) => s"$i|${quote(g)}"}.mkString("\n"), createFolders = true)
       if(verbose) println(s"Genres written to $path")
     } catch {
-      case ex: java.io.IOException => println(ex, " Occured when writing genres")
-      case ex: NullPointerException => println(ex, " Null path occured when writing genres")
+      case ex: java.io.IOException => println(ex, " Occurred when writing genres")
+      case ex: NullPointerException => println(ex, " Null path occurred when writing genres")
     }
   }
 
-  def writeArtists(artists: mutable.Set[Artist], scraperName: String): Unit = {
+  def writeArtists(artists: mutable.Set[Artist], crawlerName: String): Unit = {
     try {
-      val path = os.pwd/"spotifydata"/scraperName/"music_data"/"artist.txt"
-      os.write.over(path, artists.map(Artist.toCSV).mkString("\n"),createFolders = true)
+      val path = os.pwd/"spotifydata"/crawlerName/"music_data"/"artist.txt"
+      os.write.over(path, artists.map(Artist.toCSV).mkString("\n"), createFolders = true)
       if(verbose) println(s"Artists written to $path")
     } catch {
-      case ex: java.io.IOException => println(ex, " Occured when writing artists")
-      case ex: NullPointerException => println(ex, " Null path occured when writing artists")
+      case ex: java.io.IOException => println(ex, " Occurred when writing artists")
+      case ex: NullPointerException => println(ex, " Null path occurred when writing artists")
     }
   }
-  def writeArtistsToGenres(artists: mutable.Set[Artist], genreMap: Map[String, Int], scraperName: String): Unit = {
+  def writeArtistsToGenres(artists: mutable.Set[Artist], genreMap: Map[String, Int], crawlerName: String): Unit = {
     try {
-      val path = os.pwd/"spotifydata"/scraperName/"music_data"/"artist_genres.txt"
-      os.write.over(path, artists.flatMap(a => a.genres.map(g => s"${a.id}|${genreMap(g)}")).mkString("\n"),createFolders = true)
+      val path = os.pwd/"spotifydata"/crawlerName/"music_data"/"artist_genres.txt"
+      val artistGenres = artists.flatMap(a => a.genres.map(g => s"${quote(a.id)}|${genreMap(g)}"))
+      os.write.over(path, artistGenres.mkString("\n"), createFolders = true)
       if(verbose) println(s"Artists/Genres written to $path")
     } catch {
-      case ex: java.io.IOException => println(ex, " Occured when writing Artists/Genres")
-      case ex: NullPointerException => println(ex, " Null path occured when writing Artists/Genres")
+      case ex: java.io.IOException => println(ex, " Occurred when writing Artists/Genres")
+      case ex: NullPointerException => println(ex, " Null path occurred when writing Artists/Genres")
     }
   }
 
-  def writeAlbums(albums: mutable.Set[Album], scraperName: String): Unit = {
+  def writeAlbums(albums: mutable.Set[Album], crawlerName: String): Unit = {
     try {
-      val path = os.pwd/"spotifydata"/scraperName/"music_data"/"album.txt"
-      os.write.over(path, albums.map(Album.toCSV).mkString("\n"),createFolders = true)
+      val path = os.pwd/"spotifydata"/crawlerName/"music_data"/"album.txt"
+      os.write.over(path, albums.map(Album.toCSV).mkString("\n"), createFolders = true)
       if(verbose) println(s"Albums written to $path")
     } catch {
-      case ex: java.io.IOException => println(ex, " Occured when writing albums")
-      case ex: NullPointerException => println(ex, " Null path occured when writing albums")
+      case ex: java.io.IOException => println(ex, " Occurred when writing albums")
+      case ex: NullPointerException => println(ex, " Null path occurred when writing albums")
     }
   }
 
-  def writeAlbumToArtists(albums: mutable.Set[Album], scraperName: String): Unit = {
+  def writeAlbumToArtists(albums: mutable.Set[Album], crawlerName: String): Unit = {
     try {
-      val path = os.pwd/"spotifydata"/scraperName/"music_data"/"album_artists.txt"
-      os.write.over(path, albums.flatMap(alb => alb.artists.map(art => s"${alb.id}|$art")).mkString("\n"),createFolders = true)
+      val path = os.pwd/"spotifydata"/crawlerName/"music_data"/"album_artists.txt"
+      val albArt = albums.flatMap(alb => alb.artists.map(art => s"${quote(alb.id)}|${quote(art)}"))
+      os.write.over(path, albArt.mkString("\n"), createFolders = true)
       if(verbose) println(s"Album/Artists written to $path")
 
     } catch {
-      case ex: java.io.IOException => println(ex, " Occured when writing Album/Artists")
-      case ex: NullPointerException => println(ex, " Null path occured when writing Album/Artists")
+      case ex: java.io.IOException => println(ex, " Occurred when writing Album/Artists")
+      case ex: NullPointerException => println(ex, " Null path occurred when writing Album/Artists")
     }
   }
 
-  def writeAlbumToTracks(tracks: mutable.Set[Track], scraperName: String): Unit = {
+  def writeAlbumToTracks(tracks: mutable.Set[Track], crawlerName: String): Unit = {
     try {
-      val path = os.pwd/"spotifydata"/scraperName/"music_data"/"album_tracks.txt"
-      val without = tracks.filter(_.album_id.isEmpty)
-
-      val tracksWithAlbum = tracks.filter(_.album_id.isDefined).map(t => s"${t.album_id.get}|${t.id}")
-      os.write.over(path, tracksWithAlbum.mkString("\n"),createFolders = true)
+      val path = os.pwd/"spotifydata"/crawlerName/"music_data"/"album_tracks.txt"
+      val tracksWithAlbum = tracks.map(t => s"${quote(t.album_id)}|${quote(t.id)}")
+      os.write.over(path, tracksWithAlbum.mkString("\n"), createFolders = true)
       if(verbose) println(s"Album/Tracks written to $path")
     } catch {
-      case ex: java.io.IOException => println(ex, " Occured when writing Album/Tracks")
-      case ex: NullPointerException => println(ex, " Null path occured when writing Album/Tracks")
+      case ex: java.io.IOException => println(ex, " Occurred when writing Album/Tracks")
+      case ex: NullPointerException => println(ex, " Null path occurred when writing Album/Tracks")
     }
   }
 
-  def writePlaylists(playlists: mutable.Set[Playlist], scraperName: String): Unit = {
+  def writePlaylists(playlists: mutable.Set[Playlist], crawlerName: String): Unit = {
     try {
-      val path = os.pwd/"spotifydata"/scraperName/"music_data"/"playlist.txt"
-      os.write.over(path, playlists.map(Playlist.toCSV).mkString("\n"),createFolders = true)
+      val path = os.pwd/"spotifydata"/crawlerName/"music_data"/"playlist.txt"
+      os.write.over(path, playlists.map(Playlist.toCSV).mkString("\n"), createFolders = true)
       if(verbose) println(s"Playlists written to $path")
 
     } catch {
-      case ex: java.io.IOException => println(ex, " Occured when writing Playlists")
-      case ex: NullPointerException => println(ex, " Null path occured when writing Playlists")
+      case ex: java.io.IOException => println(ex, " Occurred when writing Playlists")
+      case ex: NullPointerException => println(ex, " Null path occurred when writing Playlists")
     }
   }
-  def writePlaylistOwnerToID(playlists: mutable.Set[Playlist], scraperName: String): Unit = {
+  def writePlaylistOwnerToID(playlists: mutable.Set[Playlist], crawlerName: String): Unit = {
     try {
-      val path = os.pwd/"spotifydata"/scraperName/"music_data"/"owner.txt"
-      os.write.over(path, playlists.map(p => s"${p.owner_id}|${p.owner_name}").mkString("\n"),createFolders = true)
+      val path = os.pwd/"spotifydata"/crawlerName/"music_data"/"owner.txt"
+      val owners = playlists.map(p => s"${quote(p.owner_id)}|${quote(p.owner_name)}")
+      os.write.over(path, owners.mkString("\n"), createFolders = true)
       if(verbose) println(s"Owners/Names written to $path")
     } catch {
-      case ex: java.io.IOException => println(ex, " Occured when writing Owners/Names")
-      case ex: NullPointerException => println(ex, " Null path occured when writing Owners/Names")
+      case ex: java.io.IOException => println(ex, " Occurred when writing Owners/Names")
+      case ex: NullPointerException => println(ex, " Null path occurred when writing Owners/Names")
     }
   }
-  def writePlaylistsToTracks(playlists: mutable.Set[Playlist], scraperName: String): Unit = {
+  def writePlaylistsToTracks(playlists: mutable.Set[Playlist], crawlerName: String): Unit = {
     try {
-      val path = os.pwd/"spotifydata"/scraperName/"music_data"/"playlist_tracks.txt"
-      val allRows = playlists.map(p => p.track_ids.map(tr => s"${p.id}|${tr}").mkString("\n"))
-      os.write.over(path, allRows.mkString("\n"),createFolders = true)
+      val path = os.pwd/"spotifydata"/crawlerName/"music_data"/"playlist_tracks.txt"
+      val allRows = playlists.map(p => p.track_ids.map(tr => s"${quote(p.id)}|${quote(tr)}").mkString("\n"))
+      os.write.over(path, allRows.mkString("\n"), createFolders = true)
       if(verbose) println(s"Playlists/Tracks written to $path")
     } catch {
-      case ex: java.io.IOException => println(ex, " Occured when writing Playlists/Tracks")
-      case ex: NullPointerException => println(ex, " Null path occured when writing Playlists/Tracks")
+      case ex: java.io.IOException => println(ex, " Occurred when writing Playlists/Tracks")
+      case ex: NullPointerException => println(ex, " Null path occurred when writing Playlists/Tracks")
     }
   }
-  def writeTracks(tracks: mutable.Set[Track], scraperName: String): Unit = {
+  def writeTracks(tracks: mutable.Set[Track], crawlerName: String): Unit = {
     try {
-      val path = os.pwd/"spotifydata"/scraperName/"music_data"/"track.txt"
-      os.write.over(path, tracks.map(Track.toCSV).mkString("\n"),createFolders = true)
+      val path = os.pwd/"spotifydata"/crawlerName/"music_data"/"track.txt"
+      os.write.over(path, tracks.map(Track.toCSV).mkString("\n"), createFolders = true)
       if(verbose) println(s"Tracks written to $path")
     } catch {
-      case ex: java.io.IOException => println(ex, " Occured when writing Tracks")
-      case ex: NullPointerException => println(ex, " Null path occured when writing Tracks")
+      case ex: java.io.IOException => println(ex, " Occurred when writing Tracks")
+      case ex: NullPointerException => println(ex, " Null path occurred when writing Tracks")
     }
   }
-  def writeTracksToArtists(tracks: mutable.Set[Track], scraperName: String): Unit = {
+  def writeTracksToArtists(tracks: mutable.Set[Track], crawlerName: String): Unit = {
     try {
-      val path = os.pwd/"spotifydata"/scraperName/"music_data"/"track_artists.txt"
-      os.write.over(path, tracks.flatMap(t => t.artists.map(a => s"${t.id}|$a")).mkString("\n"),createFolders = true)
+      val path = os.pwd/"spotifydata"/crawlerName/"music_data"/"track_artists.txt"
+      val trackArtists = tracks.flatMap(t => t.artists.map(a => s"${quote(t.id)}|${quote(a)}"))
+      os.write.over(path, trackArtists.mkString("\n"), createFolders = true)
       if(verbose) println(s"Tracks/Artists written to $path")
     } catch {
-      case ex: java.io.IOException => println(ex, " Occured when writing Tracks/Artists")
-      case ex: NullPointerException => println(ex, " Null path occured when writing Tracks/Artists")
+      case ex: java.io.IOException => println(ex, " Occurred when writing Tracks/Artists")
+      case ex: NullPointerException => println(ex, " Null path occurred when writing Tracks/Artists")
     }
   }
 

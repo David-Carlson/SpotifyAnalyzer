@@ -1,6 +1,7 @@
 package MusicObject
 
 import ujson.Value
+import Helper.{parseNumOpt, quote, sanitize}
 
 case class Artist(id: String, name: String, genres: Set[String], popularity: Int, followers: Int){
   override def equals(o: Any) = o match {
@@ -15,10 +16,12 @@ object Artist {
   def toCSV(artist: Artist): String = {
     artist match {
       case Artist(id, name, genres, popularity, followers) =>
-        s"$id|$name|$popularity|$followers"
+        val idstr = quote(id)
+        val namestr = quote(id)
+        s"$idstr|$namestr|$popularity|$followers"
     }
   }
-  def getSchema(): String = "$id|$name|$popularity|$followers"
+  def getSchema(): String = "$idstr|$namestr|$popularity|$followers"
 
   def parseArtist(i: Value): Option[Artist] = {
     try {
@@ -33,8 +36,7 @@ object Artist {
         println(all.map(_.getOrElse("%")).mkString(" | "))
         return None
       }
-
-      Some(Artist(id.get, name.get.replace('|', ':'), genres.get.map(_.str).toSet, popularity.get.toInt, followers.get.toInt))
+      Some(Artist(sanitize(id), sanitize(name), Helper.arrToSet(genres), parseNumOpt(popularity), parseNumOpt(followers)))
     } catch {
       case _: RuntimeException => None
     }

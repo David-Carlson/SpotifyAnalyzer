@@ -1,6 +1,7 @@
 package Scraper
 
 import MusicObject.{Album, Artist, Playlist, Track}
+
 import scala.collection.mutable
 
 object DataCollector {
@@ -35,46 +36,42 @@ object DataCollector {
 
   def startCollection(users: List[String], playlistsPerUser: Int = 12, minPlaylistSize: Int = 5, maxPlaylistSize: Int = 50): (Map[String, Int], mutable.Set[Album], mutable.Set[Artist], mutable.Set[Playlist], mutable.Set[Track]) = {
     println("Starting Collection\n")
-    // Get normal genres to start genre collection
 
-    println("Getting genre seeds\n")
+    // Get normal genres to start genre collection
+    println("Getting genre seeds...\n")
     addGenres(SpotifyApi.getGenreSeeds().getOrElse(List.empty))
-    if (genres.size == 0)
+    if (genres.isEmpty)
       throw new Exception("Collection failed, likely token error")
 
-    println("Getting user playlists, then filtering them\n")
-    val initialPlaylists = users.flatMap(SpotifyApi.getUserPlaylistIDS)
-      .map(SpotifyApi.getPlaylist)
+    println(s"Getting playlists from ${users.size} users...")
+    val seedPlaylists = users.flatMap(u => SpotifyApi.getUserPlaylistIDS(u, minPlaylistSize))
+    println(s"There are ${seedPlaylists.length} playlists before filtering")
+
+    val allUserPlaylists = seedPlaylists
+      .grouped(10)
+      .zipWithIndex
+      .map{ case (grp: List[String], idx: Int) =>
+        println(s"Retrieving playlists ${idx * 10}/${seedPlaylists.length}")
+        grp
+      }
+      .flatMap(_.map(SpotifyApi.getPlaylist))
       .filter(_.isDefined)
       .map(_.get)
-      .filter(p => users.contains(p.owner_id))
-    addPlaylists(filterPlaylists(initialPlaylists, users, playlistsPerUser, minPlaylistSize, maxPlaylistSize))
+      .toList
 
-//    println()
-//    println(playlists.map(_.track_total).sum)
-//    throw new Exception("remove")
+    val filteredPlaylists = filterPlaylists(allUserPlaylists, users, playlistsPerUser, minPlaylistSize, maxPlaylistSize)
+    println(s"After filtering, there are ${filteredPlaylists.length} playlists")
+    addPlaylists(filteredPlaylists)
 
-    //    addPlaylists(SpotifyApi.getUserPlaylistIDS(username)
-    //      .take(2)
-    //      .map(SpotifyApi.getPlaylist(_))
-    //      .filter(_.isDefined)
-    //      .map(_.get)
-    //      .filter(_.owner_id == username))
-
-    //    addPlaylists(List(weddingPlaylist)
-    //      .map(SpotifyApi.getPlaylist(_))
-    //      .filter(_.isDefined)
-    //      .map(_.get))
-
-    println(s"Getting tracks from ${playlists.size} playlists\n")
+    println(s"\nGetting tracks from ${playlists.size} playlists...\n")
     // For each playlist, get tracks, add tracks to playlist. Return all tracks for further use
     playlists.foreach(playlist => {
       val tracks = SpotifyApi.getPlaylistTracks(playlist.id)
       playlist.track_ids ++= tracks.map(_.id)
-      addArtistIDS(tracks.flatMap(_.artists).toList)
-      addAlbumIDS(tracks.map(_.album_id).filter(_.isDefined).map(_.get))
+      addArtistIDS(tracks.flatMap(_.artists))
+      addAlbumIDS(tracks.map(_.album_id))
       addTracks(tracks)
-      if (tracks.length == 0) {
+      if (tracks.isEmpty) {
         playlists -= playlist
       }
     })
@@ -82,14 +79,14 @@ object DataCollector {
     if (albumIDSToAdd.isEmpty) {
       println("Found 0 albums to retrieve")
     } else {
-      println("Retrieving Albums... ")
+      println("Getting Albums... ")
     }
     // get albums, adding new tracks to id list.
     val newAlbums = albumIDSToAdd
       .grouped(20)
       .zipWithIndex
       .map{ case (grp: mutable.Set[String], idx: Int) => {
-        println(s"Retrieving ${idx * 20}/${albumIDSToAdd.size} albums")
+        println(s"Retrieving albums ${idx * 20}/${albumIDSToAdd.size}")
         grp
       }}
       .flatMap(SpotifyApi.getSeveralAlbums(_))
@@ -97,7 +94,7 @@ object DataCollector {
     addArtistIDS((newAlbums.flatMap(_.artists).toList))
 
     val track_count = albums.map(_.tracks).sum
-    println(s"\nGetting approximately ${track_count} tracks")
+    println(s"\nGetting approximately ${track_count} tracks...")
     val albumTracks = albumIDSToAdd
       .grouped(50)
       .zipWithIndex
@@ -109,11 +106,11 @@ object DataCollector {
       .toList
     addTracks(albumTracks)
 
-    println(s"\nGetting ${artistIDSToAdd.size} artists")
+    println(s"\nGetting ${artistIDSToAdd.size} artists...")
     val newArtists = artistIDSToAdd.grouped(20)
       .zipWithIndex
       .map{ case (grp: mutable.Set[String], idx: Int) => {
-        println(s"Retrieving Artists ${idx * 20}/${artistIDSToAdd.size}")
+        println(s"Retrieving artists ${idx * 20}/${artistIDSToAdd.size}")
         grp
       }}
       .map(SpotifyApi.getSeveralArtists(_))
@@ -132,7 +129,7 @@ object DataCollector {
     (genreMap, albums, artists, playlists, tracks)
   }
   def printAllData(showData: Boolean = false): Unit = {
-    println("\nWeb scraping complete!")
+    println("\nWeb Crawling complete!")
     println("----------------------")
     println(s"Playlists: ${playlists.size}")
     if (showData) {

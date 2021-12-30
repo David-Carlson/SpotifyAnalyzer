@@ -19,12 +19,13 @@ object PasswordHash {
   val PBKDF2_INDEX = 2
 
   def main(args: Array[String]): Unit = {
-    val password = "secrets"
-    val hash = createSaltedHash(password)
-    println(createSaltedHash(password))
-    println(validatePassword(password, createSaltedHash(password)))
-
-    println(simpleHash(password))
+    println("Test")
+//    val password = "secrets"
+//    val hash = createSaltedHash(password)
+//    println(createSaltedHash(password))
+//    println(validatePassword(password, createSaltedHash(password)))
+//
+//    println(simpleHash(password))
   }
 
   def simpleHash(password: String): String = password.md5
