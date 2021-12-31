@@ -19,11 +19,12 @@ object Track {
       case Track(id, name, artists, album_id, added_at, duration, track_number, explicit, popularity) =>
         val idS = quote(id)
         val nameS = quote(name)
+        val album_idS = quote(album_id)
         val added_atS = quote(added_at)
-        s"$idS|$nameS|$added_atS|$duration|$track_number|$explicit|$popularity"
+        s"$idS|$nameS|$album_idS|$added_atS|$duration|$track_number|$explicit|$popularity"
     }
   }
-  def getSchema(): String = "$idS|$nameS|$added_atS|$duration|$track_number|$explicit|$popularity"
+  def getSchema(): String = "$idS|$nameS|$album_idS|$added_atS|$duration|$track_number|$explicit|$popularity"
 
   def parsePlaylistTrack(i: Value): Option[Track] = {
     try {

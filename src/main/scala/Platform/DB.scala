@@ -3,16 +3,16 @@ package Platform
 import org.apache.spark.SparkContext._
 import org.apache.spark.SparkContext
 import org.apache.spark.sql.SparkSession
+import TableInfo._
 
 object DB {
   private var sparkSession: SparkSession = null
-  val tableNames = List("genre", "album", "artist", "owner", "playlist", "track", "album_artists",
-    "album_tracks", "artist_genres", "playlist_tracks", "track_artists")
+
 
   def getSparkSession(): SparkSession = {
     if (sparkSession == null) {
       println("Creating SparkSession")
-      DBHelper.suppressLogs(List("org", "akka"))
+      suppressLogs(List("org", "akka"))
       System.setProperty("hadoop.home.dir", "C:\\hadoop")
       sparkSession = SparkSession
         .builder
@@ -20,14 +20,24 @@ object DB {
         .config("spark.master", "local")
         .enableHiveSupport()
         .getOrCreate()
+      sparkSession.conf.set("hive.exec.dynamic.partition.mode", "nonstrict")
       sparkSession.sparkContext.setLogLevel("ERROR")
     }
     sparkSession
   }
   def main(args: Array[String]): Unit = {
-    val crawlerName = "smallest"
-    Analysis.averageAlbumTrackLength()
+    os.list(os.pwd / "spotifydata").foreach(println)
+    val startTime = System.nanoTime()
+
+    val crawlerName = "large-database"
+//    Analysis.getAvgTrackPopularityByUser()
+//    (1 to 10).foreach(_ => Analysis.getAvgTrackPopularityByPlaylist("doctorsalt"))
+
 //    setupDatabase(crawlerName)
+//    Analysis.averageAlbumTrackLength()
+
+    val endTime  = (System.nanoTime()- startTime) / 1e9d
+    println(s"$endTime seconds")
 //    sparkTest()
   }
 
@@ -52,15 +62,26 @@ object DB {
   def setupDatabase(crawlerName: String): Unit = {
     // Add other tables, login tables
     val spark = getSparkSession()
-    val filenames = tableNames
-    filenames.foreach{f =>
+
+    tableNames.foreach(dropTable)
+    createAllTables()
+    inputFileIntoPartitionTable(crawlerName, "playlist")
+
+
+    if (canLoadTables(crawlerName, tableNames)) {
+      simpleTables.foreach(inputFileIntoTable(crawlerName, _))
+      partitionTables.foreach(inputFileIntoPartitionTable(crawlerName, _))
+    }
+//    spark.sql("SELECT * FROM playlist").show()
+    //    printSimpleSchemas()
+  }
+
+  def printSimpleSchemas(): Unit = {
+    val spark = getSparkSession()
+    tableNames.foreach{f =>
       println(f)
       spark.sqlContext.table(f).printSchema()
     }
-//    filenames.foreach(dropTable)
-//    createAllTables()
-//    if (canLoadTables(crawlerName, filenames))
-//      filenames.foreach(inputFileIntoTable(crawlerName, _))
   }
 
   def canLoadTables(crawlerName: String, fileAndTableNames: List[String]): Boolean = {
@@ -69,7 +90,7 @@ object DB {
 
   def createAllTables(): Unit = {
     val spark = getSparkSession()
-    TableDefinitions.tableSchemas.foreach(spark.sql)
+    tableSchemas.foreach(spark.sql)
   }
 
   def dropTable(fileAndTableName: String): Unit = {
@@ -78,27 +99,40 @@ object DB {
   }
 
   def inputFileIntoTable(crawlerName: String, fileAndTableName: String): Unit = {
-    val path = os.pwd/"spotifydata"/crawlerName/"music_data"/(fileAndTableName + ".txt")
-    val inputStr = os.read.lines.stream(path)
-      .filter(_.nonEmpty)
-      .map(_.split("\\|").map(_.trim).mkString(","))
-      .map(l => s"($l)")
-      .mkString(", ")
+    try {
+      val path = os.pwd/"spotifydata"/crawlerName/"music_data"/(fileAndTableName + ".txt")
+      val inputStr = os.read.lines.stream(path)
+        .filter(_.nonEmpty)
+        .map(_.split("\\|").map(_.trim).mkString(","))
+        .map(l => s"($l)")
+        .mkString(", ")
+      val spark = getSparkSession()
+      spark.sql(s"INSERT INTO TABLE $fileAndTableName VALUES " + inputStr)
+    }
+    catch {
+      case ex: Throwable => println(s"simpleTable $fileAndTableName failed: ")
+    }
+  }
+
+  def inputFileIntoPartitionTable(crawlerName: String, tableName: String): Unit = {
+    val path = os.pwd/"spotifydata"/crawlerName/"music_data"/(tableName + ".txt")
     val spark = getSparkSession()
-    spark.sql(s"INSERT INTO TABLE $fileAndTableName VALUES " + inputStr)
-//    spark.sql(s"SELECT * FROM $fileAndTableName").show()
-//    spark.sql(s"SELECT COUNT(*) FROM $fileAndTableName").show()
+    for (row <- os.read.lines.stream(path) if row.nonEmpty) {
+      val cols = row.split("\\|").map(_.trim)
+      val part = cols(partitionIdx(tableName))
+      val rest = cols.filter(_ != part).mkString(", ")
+      val sql = getPartitionInsertHeader(tableName, part) + rest
+      spark.sql(sql)
+    }
+  }
+  def getPartitionInsertHeader(tableName: String, partition: String): String = {
+    s"INSERT INTO $tableName PARTITION(${partitionName(tableName)}=$partition) SELECT "
   }
 
 
-  def test(): Unit = {
-    val spark = getSparkSession()
-
-    spark.sql("DROP table IF EXISTS BevA")
-    spark.sql("create table IF NOT EXISTS BevA(Beverage String,BranchID String) row format delimited fields terminated by ','");
-    spark.sql("LOAD DATA LOCAL INPATH 'Bev_BranchA.txt' INTO TABLE BevA")
-    spark.sql("SELECT Count(*) AS TOTALCOUNT FROM BevA").show()
-    spark.sql("SELECT Count(*) AS NumBranch2BevAFile FROM BevA WHERE BevA.BranchID='Branch2'").show()
-    spark.sql("SELECT * FROM BevA").show()
+  def suppressLogs(params: List[String]): Unit = {
+    // Levels: all, debug, error, fatal, info, off, trace, trace_int, warn
+    import org.apache.log4j.{Level, Logger}
+    params.foreach(Logger.getLogger(_).setLevel(Level.OFF))
   }
 }

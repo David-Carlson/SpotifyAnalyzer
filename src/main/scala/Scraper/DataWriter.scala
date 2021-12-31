@@ -1,20 +1,21 @@
 package Scraper
 import MusicObject.Helper.quote
 import MusicObject.{Album, Artist, Playlist, Track}
+import Platform.PasswordHash
 import Platform.PasswordHash.simpleHash
 
 import scala.collection.mutable
 
 object DataWriter {
   // Update this whenever the output format changes
-  val version = "2.0.0"
+  val version = "2.1.0"
   // TODO: Change to env var, use throughout app
   val verbose = false
 
   def main(args: Array[String]): Unit = {
-    val usernames = "doctorsalt".split("\\|").toList
+    val usernames = "doctorsalt|1249049206|tchheou".split("\\|").toList
 
-    collectAndWriteAllData(usernames, "smallest", 1, 3, 15)
+    collectAndWriteAllData(usernames, "large-database", 10, 6, 30)
 
 //    val scraperName = "wall-e"
 //    collectAndWriteAllData(usernames, scraperName, 6, 5, 30)
@@ -51,6 +52,7 @@ object DataWriter {
     writePlaylists(playlists, crawlerName)
     writePlaylistsToTracks(playlists, crawlerName)
     writePlaylistOwnerToID(playlists, crawlerName)
+    writeAccountPasswords(playlists, crawlerName)
 
     writeTracks(tracks, crawlerName)
     writeTracksToArtists(tracks, crawlerName)
@@ -65,6 +67,7 @@ object DataWriter {
     // TODO: Change to multiple usernames
     val manifestTxt = List(
       s"Music supplied by users  : ${users.mkString(", ")}",
+      s"Crawler Version          : ${version}",
       s"Crawler Format           : #$versionHash",
       s"Crawled by robot         : $crawlerName",
       s"Number of API Requests   : ${SpotifyApi.requestCount}\n",
@@ -170,10 +173,24 @@ object DataWriter {
       val path = os.pwd/"spotifydata"/crawlerName/"music_data"/"owner.txt"
       val owners = playlists.map(p => s"${quote(p.owner_id)}|${quote(p.owner_name)}")
       os.write.over(path, owners.mkString("\n"), createFolders = true)
+
       if(verbose) println(s"Owners/Names written to $path")
     } catch {
       case ex: java.io.IOException => println(ex, " Occurred when writing Owners/Names")
       case ex: NullPointerException => println(ex, " Null path occurred when writing Owners/Names")
+    }
+  }
+  def writeAccountPasswords(playlists: mutable.Set[Playlist], crawlerName: String): Unit = {
+    try {
+      val path = os.pwd/"spotifydata"/crawlerName/"music_data"/"user_password.txt"
+      val owner_password = playlists.map(p => s"${quote(p.owner_id)}|${quote(PasswordHash.createSaltedHash(p.owner_id))}|false")
+      val admin = s"${quote("admin")}|${quote(PasswordHash.createSaltedHash("admin"))}|true"
+      os.write.over(path, (owner_password + admin).mkString("\n"), createFolders = true)
+
+      if(verbose) println(s"User/Password written to $path")
+    } catch {
+      case ex: java.io.IOException => println(ex, " Occurred when writing User/Password")
+      case ex: NullPointerException => println(ex, " Null path occurred when writing User/Password")
     }
   }
   def writePlaylistsToTracks(playlists: mutable.Set[Playlist], crawlerName: String): Unit = {
