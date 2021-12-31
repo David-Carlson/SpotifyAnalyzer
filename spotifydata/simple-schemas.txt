@@ -1,0 +1,62 @@
+genre
+ |-- id: integer
+ |-- name: string
+
+album
+ |-- id: string
+ |-- name: string
+ |-- tracks: integer
+ |-- popularity: integer
+
+artist
+ |-- id: string
+ |-- name: string
+ |-- popularity: integer
+ |-- followers: integer
+
+owner
+ |-- id: string
+ |-- name: string
+
+playlist
+ |-- id: string
+ |-- name: string
+ |-- desc: string
+ |-- owner_id: string
+ |-- public: boolean
+ |-- followers: integer
+ |-- total_tracks: integer
+
+track
+ |-- id: string
+ |-- name: string
+ |-- added: timestamp
+ |-- duration_ms: integer
+ |-- track_number: integer
+ |-- explicit: boolean
+ |-- popularity: integer
+
+album_artists
+ |-- id: string
+ |-- artist_id: string
+
+album_tracks
+ |-- id: string
+ |-- track_id: string
+
+artist_genres
+ |-- id: string
+ |-- genre_id: string
+
+playlist_tracks
+ |-- id: string
+ |-- track_id: string
+
+track_artists
+ |-- id: string
+ |-- artist_id: string
+
+user_password
+ |-- id: string
+ |-- password: string
+ |-- is_admin: boolean

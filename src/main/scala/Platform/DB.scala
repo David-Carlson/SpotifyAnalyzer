@@ -27,17 +27,19 @@ object DB {
   }
   def main(args: Array[String]): Unit = {
     os.list(os.pwd / "spotifydata").foreach(println)
-    val startTime = System.nanoTime()
-
-    val crawlerName = "large-database"
+//    val paths = os.pwd / "spotifydata"
+//    println(paths.baseName)
+//    val startTime = System.nanoTime()
+//
+//    val crawlerName = "large-database"
 //    Analysis.getAvgTrackPopularityByUser()
 //    (1 to 10).foreach(_ => Analysis.getAvgTrackPopularityByPlaylist("doctorsalt"))
-
+//
 //    setupDatabase(crawlerName)
 //    Analysis.averageAlbumTrackLength()
 
-    val endTime  = (System.nanoTime()- startTime) / 1e9d
-    println(s"$endTime seconds")
+//    val endTime  = (System.nanoTime()- startTime) / 1e9d
+//    println(s"$endTime seconds")
 //    sparkTest()
   }
 

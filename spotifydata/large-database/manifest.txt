@@ -1,0 +1,17 @@
+Music supplied by users  : doctorsalt, 1249049206, tchheou
+Crawler Version          : 2.0.0
+Crawler Format           : #8a37d3ff540b52da131617c54643a789
+Crawled by robot         : large-database
+Number of API Requests   : 603
+
+Number of Playlists      : 24
+Number of Albums         : 354
+Number of Artists        : 385
+Number of Tracks         : 4220
+Number of Genres         : 525
+
+Allowed playlist sizes   : Between 6 and 30
+Playlists taken per user : 10
+Time to scrape data      : 148.4546404 seconds
+Time to write data       : 0.4853878 seconds
+Created                  : 2021-12-30T22:38:06.322

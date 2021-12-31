@@ -13,9 +13,9 @@ object DataWriter {
   val verbose = false
 
   def main(args: Array[String]): Unit = {
-    val usernames = "doctorsalt|1249049206|tchheou".split("\\|").toList
+    val usernames = "doctorsalt".split("\\|").toList
 
-    collectAndWriteAllData(usernames, "large-database", 10, 6, 30)
+    collectAndWriteAllData(usernames, "small-database", 10, 6, 30)
 
 //    val scraperName = "wall-e"
 //    collectAndWriteAllData(usernames, scraperName, 6, 5, 30)

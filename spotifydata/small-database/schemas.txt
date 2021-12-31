@@ -1,0 +1,146 @@
+Table Schemas:
+
+----------------------------------------------
+GENRE
+
+CREATE TABLE IF NOT EXISTS spotify.genre (
+   id INT,
+   name VARCHAR(150))
+COMMENT 'Gives the full name of a genre'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '|'
+LINES TERMINATED BY '\n';
+
+LOAD DATA INPATH '/user/daweiwei/scrappy_joe/music_data/genre.txt' OVERWRITE INTO TABLE genre;
+
+----------------------------------------------
+ALBUM
+
+CREATE TABLE IF NOT EXISTS spotify.album (
+   id VARCHAR(50),
+   name VARCHAR(200),
+   tracks INT,
+   popularity INT)
+COMMENT 'Broad details for an album'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '|'
+LINES TERMINATED BY '\n';
+
+LOAD DATA INPATH '/user/daweiwei/scrappy_joe/music_data/album.txt' INTO TABLE album;
+
+----------------------------------------------
+ARTIST
+
+CREATE TABLE IF NOT EXISTS spotify.artist (
+   id VARCHAR(50),
+   name VARCHAR(200),
+   popularity INT,
+   followers INT)
+COMMENT 'Broad details for an artist'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '|'
+LINES TERMINATED BY '\n';
+
+LOAD DATA INPATH '/user/daweiwei/scrappy_joe/music_data/artist.txt' INTO TABLE artist;
+
+----------------------------------------------
+PLAYLIST
+
+CREATE TABLE IF NOT EXISTS spotify.playlist (
+   id VARCHAR(50),
+   name VARCHAR(200),
+   desc VARCHAR(300),
+   owner_id VARCHAR(50),
+   public BOOLEAN,
+   followers INT,
+   total_tracks INT)
+COMMENT 'Broad details for a playlist'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '|'
+LINES TERMINATED BY '\n';
+
+LOAD DATA INPATH '/user/daweiwei/scrappy_joe/music_data/playlist.txt' INTO TABLE playlist;
+
+----------------------------------------------
+TRACK TWO FIELDS MOSTLY NULL, added/popularity
+
+CREATE TABLE IF NOT EXISTS spotify.track (
+   id VARCHAR(50),
+   name VARCHAR(200),
+   added TIMESTAMP,
+   duration_ms INT,
+   track_number INT,
+   explicit BOOLEAN,
+   popularity INT)
+COMMENT 'Broad details for a track'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '|'
+LINES TERMINATED BY '\n';
+
+LOAD DATA INPATH '/user/daweiwei/scrappy_joe/music_data/track.txt' INTO TABLE track;
+
+----------------------------------------------
+ALBUM_ARTISTS Check multiple artists per album
+
+CREATE TABLE IF NOT EXISTS spotify.album_artists (
+   album_id VARCHAR(50),
+   artist VARCHAR(50))
+COMMENT 'Relates a single album to its Artists'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '|'
+LINES TERMINATED BY '\n';
+
+LOAD DATA INPATH '/user/daweiwei/scrappy_joe/music_data/album_artists.txt' INTO TABLE album_artists;
+
+----------------------------------------------
+ALBUM_TRACKS
+
+CREATE TABLE IF NOT EXISTS spotify.album_tracks (
+   album_id VARCHAR(50),
+   track_id VARCHAR(50))
+COMMENT 'Relates a single album to its Tracks'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '|'
+LINES TERMINATED BY '\n';
+
+LOAD DATA INPATH '/user/daweiwei/scrappy_joe/music_data/album_tracks.txt' INTO TABLE album_tracks;
+
+----------------------------------------------
+ARTIST_GENRES
+
+CREATE TABLE IF NOT EXISTS spotify.artist_genres (
+   artist_id VARCHAR(50),
+   genre_id VARCHAR(50))
+COMMENT 'Relates a single Artist to their genres'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '|'
+LINES TERMINATED BY '\n';
+
+LOAD DATA INPATH '/user/daweiwei/scrappy_joe/music_data/artist_genres.txt' INTO TABLE spotify.artist_genres;
+
+----------------------------------------------
+OWNER
+
+CREATE TABLE IF NOT EXISTS spotify.owner (
+   id VARCHAR(50),
+   name VARCHAR(50))
+COMMENT 'Lists an owners name given their ID'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '|'
+LINES TERMINATED BY '\n';
+
+LOAD DATA INPATH '/user/daweiwei/scrappy_joe/music_data/owner.txt' INTO TABLE spotify.owner;
+----------------------------------------------
+PLAYLIST_TRACKS
+
+CREATE TABLE IF NOT EXISTS spotify.playlist_tracks (
+   playlist_id VARCHAR(50),
+   track_id VARCHAR(50))
+COMMENT 'Relates a single playlist to its tracks'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '|'
+LINES TERMINATED BY '\n';
+
+LOAD DATA INPATH '/user/daweiwei/scrappy_joe/music_data/playlist_tracks.txt' INTO TABLE spotify.playlist_tracks;
+
+----------------------------------------------
+TRACK_ARTISTS CHECK
+
+CREATE TABLE IF NOT EXISTS spotify.track_artists (
+   track_id VARCHAR(50),
+   artist_id VARCHAR(50))
+COMMENT 'Relates a single track to its artists'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '|'
+LINES TERMINATED BY '\n';
+
+LOAD DATA INPATH '/user/daweiwei/scrappy_joe/music_data/track_artists.txt' INTO TABLE spotify.track_artists;
