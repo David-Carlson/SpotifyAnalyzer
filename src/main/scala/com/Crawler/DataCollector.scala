@@ -34,7 +34,9 @@ object DataCollector {
       .take(playlistsPerUser))
   }
 
-  def startCollection(users: List[String], playlistsPerUser: Int = 12, minPlaylistSize: Int = 5, maxPlaylistSize: Int = 50): (Map[String, Int], mutable.Set[Album], mutable.Set[Artist], mutable.Set[Playlist], mutable.Set[Track]) = {
+  def startCollection(users: List[String], playlistsPerUser: Int = 12,
+                      minPlaylistSize: Int = 5, maxPlaylistSize: Int = 50, token: String): (Map[String, Int], mutable.Set[Album], mutable.Set[Artist], mutable.Set[Playlist], mutable.Set[Track]) = {
+    SpotifyApi.bearer = token
     println("Starting Collection\n")
 
     // Get normal genres to start genre collection

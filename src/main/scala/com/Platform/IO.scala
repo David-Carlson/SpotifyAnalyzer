@@ -36,8 +36,10 @@ object IO {
       } else {
         user = line(0)
         password = line(1)
-        if (user.length < 4 || password.length < 4)
+        if (user.length < 4 || password.length < 4) {
+//          println(s"$user|$password")
           println("Username and password must be at least 4 characters")
+        }
       }
     } while(user.length < 4 || password.length < 4)
     (user, password)
@@ -91,6 +93,22 @@ object IO {
       }
     } while(users.isEmpty)
     users
+  }
+
+  def getNewPassword(oldHash: String): String = {
+    var newPass = ""
+    do {
+      println("Enter a new password: ")
+      newPass = StdIn.readLine()
+      if (PasswordHash.validatePassword(newPass, oldHash)) {
+        println("Password matches the old hash, choose a new password")
+        newPass = ""
+      } else if (newPass.length < 4) {
+        println("Password must be at least 4 characters")
+        newPass = ""
+      }
+    } while(newPass.isEmpty)
+    newPass
   }
 }
 

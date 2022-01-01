@@ -28,9 +28,10 @@ object DataWriter {
   }
   // doctorsalt|1249049206|tchheou
 
-  def collectAndWriteAllData(users: List[String], crawlerName: String, playlistsPerUser: Int, minPlaylistSize: Int, maxPlaylistSize: Int): Unit = {
+  def collectAndWriteAllData(users: List[String], crawlerName: String,
+                             playlistsPerUser: Int, minPlaylistSize: Int, maxPlaylistSize: Int, token: String = sys.env("spotifytoken")): Unit = {
     val startTime = System.nanoTime()
-    val (genreMap, albums, artists, playlists, tracks) = DataCollector.startCollection(users, playlistsPerUser, minPlaylistSize, maxPlaylistSize)
+    val (genreMap, albums, artists, playlists, tracks) = DataCollector.startCollection(users, playlistsPerUser, minPlaylistSize, maxPlaylistSize, token)
     if (albums.isEmpty || artists.isEmpty || playlists.isEmpty || tracks.isEmpty) {
       println("No data returning, aborting write procedure")
       return

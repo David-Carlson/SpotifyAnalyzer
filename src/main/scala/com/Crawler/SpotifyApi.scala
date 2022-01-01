@@ -12,7 +12,7 @@ import ujson.Value
 object SpotifyApi {
   // https://developer.spotify.com/console/get-playlists/?user_id=doctorsalt&limit=&offset=
   val baseUrl = "https://api.spotify.com/v1"
-  val bearer = sys.env("spotifytoken")
+  var bearer = ""
 
   var requestCount = 0
 

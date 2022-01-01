@@ -84,13 +84,10 @@ object DB {
     createAllTables()
     inputFileIntoPartitionTable(crawlerName, "playlist")
 
-
     if (canLoadTables(crawlerName, tableNames)) {
       simpleTables.foreach(inputFileIntoTable(crawlerName, _))
       partitionTables.foreach(inputFileIntoPartitionTable(crawlerName, _))
     }
-//    spark.sql("SELECT * FROM playlist").show()
-    //    printSimpleSchemas()
   }
 
   def printSimpleSchemas(): Unit = {
@@ -148,6 +145,8 @@ object DB {
 
   def validateLogin(username: String, givenPassword: String): Option[UserInfo] = {
     val spark = getSparkSession()
+    // TODO REMOVE
+    spark.sql("SELECT * FROM user_password").show(20)
 
     import spark.implicits._
     val res = spark.sql(s"SELECT * FROM user_password where id='$username'")
@@ -171,7 +170,14 @@ object DB {
     val spark = getSparkSession()
     val hash = PasswordHash.createSaltedHash(password)
     spark.sql(s"INSERT INTO TABLE user_password VALUES ('$username', '$hash', false)")
-    None
+    validateLogin(username, password)
+  }
+
+  def updatePassword(username: String, password: String): Option[UserInfo] = {
+    val spark = getSparkSession()
+    val hash = PasswordHash.createSaltedHash(password)
+    spark.sql(s"UPDATE user_password SET password='$hash' WHERE username='$username")
+    validateLogin(username, password)
   }
 
 
