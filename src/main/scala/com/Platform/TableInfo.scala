@@ -1,4 +1,4 @@
-package Platform
+package com.Platform
 
 object TableInfo {
   val tableNames = List("genre", "album", "artist", "owner", "playlist", "track", "album_artists",

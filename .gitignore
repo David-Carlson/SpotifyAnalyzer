@@ -170,6 +170,9 @@ project/plugins/project/
 .history
 .cache
 .lib/
+null/*
+metastore_db/*
+spark-warehouse/*
 
 # End of https://www.toptal.com/developers/gitignore/api/sbt
 

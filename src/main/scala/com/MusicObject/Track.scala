@@ -1,6 +1,6 @@
-package MusicObject
+package com.MusicObject
 
-import MusicObject.Helper.{parseArtistField, parseNumOpt, quote, sanitize}
+import com.MusicObject.Helper.{parseArtistField, parseNumOpt, quote, sanitize}
 import ujson.Value
 
 case class Track(id: String, name: String, artists: Set[String],

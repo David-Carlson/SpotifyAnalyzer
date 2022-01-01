@@ -1,7 +1,7 @@
-package Platform
+package com.Platform
 
 import org.apache.spark.sql.DataFrame
-import Platform.DB
+import com.Platform.DB
 import org.apache.spark
 import org.apache.spark.SparkContext._
 import org.apache.spark.SparkContext

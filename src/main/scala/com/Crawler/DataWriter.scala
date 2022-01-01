@@ -1,9 +1,9 @@
-package com.Scraper
+package com.Crawler
 
-import MusicObject.Helper.quote
-import MusicObject.{Album, Artist, Playlist, Track}
-import Platform.PasswordHash
-import Platform.PasswordHash.simpleHash
+import com.MusicObject.Helper.quote
+import com.MusicObject.{Album, Artist, Playlist, Track}
+import com.Platform.PasswordHash
+import com.Platform.PasswordHash.simpleHash
 
 import scala.collection.mutable
 
@@ -14,9 +14,9 @@ object DataWriter {
   val verbose = false
 
   def main(args: Array[String]): Unit = {
-    val usernames = "doctorsalt".split("\\|").toList
+    val usernames = "doctorsalt|1249049206|tchheou".split("\\|").toList
 
-    collectAndWriteAllData(usernames, "small-database", 10, 6, 30)
+    collectAndWriteAllData(usernames, "small-test", 1, 6, 30)
 
 //    val scraperName = "wall-e"
 //    collectAndWriteAllData(usernames, scraperName, 6, 5, 30)
@@ -68,8 +68,7 @@ object DataWriter {
     // TODO: Change to multiple usernames
     val manifestTxt = List(
       s"Music supplied by users  : ${users.mkString(", ")}",
-      s"Crawler Version          : ${version}",
-      s"Crawler Format           : #$versionHash",
+      s"Crawler Version          : ${version}-$versionHash",
       s"Crawled by robot         : $crawlerName",
       s"Number of API Requests   : ${SpotifyApi.requestCount}\n",
 
@@ -184,9 +183,10 @@ object DataWriter {
   def writeAccountPasswords(playlists: mutable.Set[Playlist], crawlerName: String): Unit = {
     try {
       val path = os.pwd/"spotifydata"/crawlerName/"music_data"/"user_password.txt"
-      val owner_password = playlists.map(p => s"${quote(p.owner_id)}|${quote(PasswordHash.createSaltedHash(p.owner_id))}|false")
-      val admin = s"${quote("admin")}|${quote(PasswordHash.createSaltedHash("admin"))}|true"
-      os.write.over(path, (owner_password + admin).mkString("\n"), createFolders = true)
+      val owner_passwords = playlists.map(p => (p.owner_id, false))
+      val admin = ("admin", true)
+      val all = (owner_passwords + admin).map(pair => s"${quote(pair._1)}|${quote(PasswordHash.createSaltedHash(pair._1))}|${pair._2}")
+      os.write.over(path, all.mkString("\n"), createFolders = true)
 
       if(verbose) println(s"User/Password written to $path")
     } catch {

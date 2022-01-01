@@ -1,7 +1,7 @@
-package MusicObject
+package com.MusicObject
 
 import ujson.Value
-import Helper.{parseNumOpt, quote, sanitize}
+import com.MusicObject.Helper.{parseNumOpt, quote, sanitize}
 
 case class Artist(id: String, name: String, genres: Set[String], popularity: Int, followers: Int){
   override def equals(o: Any) = o match {

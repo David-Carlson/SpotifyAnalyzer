@@ -1,9 +1,11 @@
-package Platform
+package com.Platform
 
 import org.apache.spark.SparkContext._
 import org.apache.spark.SparkContext
-import org.apache.spark.sql.SparkSession
-import TableInfo._
+import org.apache.spark.sql.{Encoders, SparkSession}
+import com.Platform.TableInfo._
+import com.Platform.PasswordHash.validatePassword
+import com.Platform.RowObjects.UserInfo
 
 object DB {
   private var sparkSession: SparkSession = null
@@ -26,21 +28,34 @@ object DB {
     sparkSession
   }
   def main(args: Array[String]): Unit = {
-    os.list(os.pwd / "spotifydata").foreach(println)
+    val crawlerName = "large-database"
+
+    val user = validateLogin("doctorsalt", "doctorsalts")
+    if (user.isDefined)
+      println(user)
+
+//    setupDatabase(crawlerName)
+
+//    println(validatePassword("admin", res(1)))
+//    println(spark.sql("SELECT * FROM user_password ").show())
 //    val paths = os.pwd / "spotifydata"
 //    println(paths.baseName)
 //    val startTime = System.nanoTime()
 //
-//    val crawlerName = "large-database"
+
 //    Analysis.getAvgTrackPopularityByUser()
 //    (1 to 10).foreach(_ => Analysis.getAvgTrackPopularityByPlaylist("doctorsalt"))
 //
-//    setupDatabase(crawlerName)
+
 //    Analysis.averageAlbumTrackLength()
 
 //    val endTime  = (System.nanoTime()- startTime) / 1e9d
 //    println(s"$endTime seconds")
 //    sparkTest()
+  }
+
+  def fileStuff(): Unit = {
+    os.list(os.pwd / "spotifydata").foreach(p => println(p.baseName))
   }
 
   def sparkTest(): Unit = {
@@ -129,6 +144,34 @@ object DB {
   }
   def getPartitionInsertHeader(tableName: String, partition: String): String = {
     s"INSERT INTO $tableName PARTITION(${partitionName(tableName)}=$partition) SELECT "
+  }
+
+  def validateLogin(username: String, givenPassword: String): Option[UserInfo] = {
+    val spark = getSparkSession()
+
+    import spark.implicits._
+    val res = spark.sql(s"SELECT * FROM user_password where id='$username'")
+    if (res.isEmpty)
+      None
+    else {
+      val user = res.as[UserInfo].head
+      if (PasswordHash.validatePassword(givenPassword, user.password))
+        Some(user)
+      else
+        None
+    }
+  }
+
+  def usernameIsFree(username: String): Boolean = {
+    val spark = getSparkSession()
+    spark.sql(s"SELECT * FROM user_password where id='$username'").isEmpty
+  }
+
+  def createUser(username: String, password: String): Option[UserInfo] = {
+    val spark = getSparkSession()
+    val hash = PasswordHash.createSaltedHash(password)
+    spark.sql(s"INSERT INTO TABLE user_password VALUES ('$username', '$hash', false)")
+    None
   }
 
 

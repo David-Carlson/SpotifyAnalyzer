@@ -1,6 +1,6 @@
-package com.Scraper
+package com.Crawler
 
-import MusicObject.{Album, Artist, Playlist, Track}
+import com.MusicObject.{Album, Artist, Playlist, Track}
 
 import scala.collection.mutable
 

@@ -1,4 +1,4 @@
-package MusicObject
+package com.MusicObject
 
 import ujson.Value
 import scala.collection.mutable.ArrayBuffer

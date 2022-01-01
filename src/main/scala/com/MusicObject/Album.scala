@@ -1,6 +1,6 @@
-package MusicObject
+package com.MusicObject
 import ujson.Value
-import Helper.{parseNumOpt, quote, sanitize}
+import com.MusicObject.Helper.{parseNumOpt, quote, sanitize}
 
 case class Album(id: String, name: String, artists: Set[String],
                  tracks: Int, popularity: Int, var track_ids: Set[String] = Set[String]()){

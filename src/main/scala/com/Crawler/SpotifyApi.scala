@@ -1,10 +1,10 @@
-package com.Scraper
+package com.Crawler
 
-import MusicObject.Album.parseAlbum
-import MusicObject.Artist.parseArtist
-import MusicObject.Playlist.{parsePlaylist, parsePlaylistID}
-import MusicObject.Track.{parseAlbumTrack, parsePlaylistTrack}
-import MusicObject.{Album, Artist, Playlist, Track}
+import com.MusicObject.Album.parseAlbum
+import com.MusicObject.Artist.parseArtist
+import com.MusicObject.Playlist.{parsePlaylist, parsePlaylistID}
+import com.MusicObject.Track.{parseAlbumTrack, parsePlaylistTrack}
+import com.MusicObject.{Album, Artist, Playlist, Track}
 import ujson.Value
 
 
