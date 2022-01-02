@@ -1,0 +1,16 @@
+Music supplied by users  : doctorsalt, gangstergandhi, 1263300112, nathanthemighty
+Crawler Version          : 2.1.0-140e3697215eb59614dfdcac5b5cc76f
+Crawled by robot         : mega
+Number of API Requests   : 772
+
+Number of Playlists      : 36
+Number of Albums         : 388
+Number of Artists        : 422
+Number of Tracks         : 5359
+Number of Genres         : 581
+
+Allowed playlist sizes   : Between 9 and 30
+Playlists taken per user : 10
+Time to scrape data      : 162.4509857 seconds
+Time to write data       : 0.4457092 seconds
+Created                  : 2022-01-01T22:22:17.545

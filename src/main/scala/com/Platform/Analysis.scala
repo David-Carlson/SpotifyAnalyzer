@@ -50,6 +50,22 @@ object Analysis {
       s" LIMIT 10").show(10, truncate = false)
   }
 
+  def getTrackSuggestions(user_id: String): Unit = {
+    val spark = DB.getSparkSession()
+    println(s"The top genres that $user_id is missing out on...")
+    val genres = s"(SELECT g.name genreNames " +
+      s" FROM playlist p " +
+      s" JOIN playlist_tracks pt ON p.id = pt.id " +
+      s" JOIN track_artists ta ON pt.track_id = ta.id " +
+      s" JOIN artist_genres ag ON ta.artist_id = ag.id " +
+      s" JOIN genre g on ag.genre_id = g.id " +
+      s" WHERE p.owner_id !='$user_id' " +
+      s" GROUP BY g.name " +
+      s" ORDER BY COUNT(*) DESC " +
+      s" LIMIT 10)"
+    spark.sql(genres).show(10, truncate = false)
+  }
+
   def getAvgTrackPopularityByUser(): Unit = {
     val spark = DB.getSparkSession()
     println(s"The average popularity of songs by user...")
@@ -68,20 +84,6 @@ object Analysis {
     println(s"The average popularity of songs by playlist...")
     spark.sql(s"SELECT p.name, o.name, Round(AVG(t.popularity), 0) AvgPopularity " +
       s" FROM playlist p " +
-      s" JOIN playlist_tracks pt ON p.id = pt.id " +
-      s" JOIN track t ON pt.track_id = t.id " +
-      s" Join owner o ON o.id = p.owner_id " +
-      s" WHERE t.popularity > 0 " + where +
-      s" GROUP BY p.name, o.name " +
-      s" ORDER BY Round(AVG(t.popularity), 0) DESC LIMIT 20").show(truncate = false)
-  }
-
-  def getPlaylistExplosivity(user: String = ""): Unit = {
-    val spark = DB.getSparkSession()
-    val where = if (user.isEmpty) "" else s"AND p.owner_id = '$user'"
-    println(s"The average popularity of songs by playlist...")
-    spark.sql(s"SELECT p.name, o.name, Round(AVG(t.popularity), 0) AvgPopularity FROM " +
-      s" playlist p " +
       s" JOIN playlist_tracks pt ON p.id = pt.id " +
       s" JOIN track t ON pt.track_id = t.id " +
       s" Join owner o ON o.id = p.owner_id " +

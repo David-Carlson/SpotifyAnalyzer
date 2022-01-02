@@ -42,9 +42,8 @@ object Terminal {
       println()
       println("1) Find general patterns in the music archive")
       println("2) Login to your account")
-      println("3) Create an account")
       println("0) Quit the program")
-      IO.readInt(0, 3) match {
+      IO.readInt(0, 2) match {
         case 1 => runGeneralAnalysis()
         case 2 => loginOrLogout(); return
         case 3 => createUserAccount()

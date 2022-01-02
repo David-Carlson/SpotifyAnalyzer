@@ -71,7 +71,6 @@ object SpotifyApi {
         .flatMap { _ =>
           val json = getJsonDataWithLink(nextLink.get)
           nextLink = json("next").strOpt
-//          json("items").arr.map(_("id").strOpt)
           json("items").arr
             .map(i => parsePlaylistID(i, username, minSize))
         }
@@ -81,7 +80,7 @@ object SpotifyApi {
     } catch {
       case ex: requests.RequestFailedException => printException(ex, "getUserPlaylists failed")
         List.empty
-      case ex => println(s"An unexpected error occurred in getUserplaylists: $ex")
+      case ex => println(s"An unexpected error occurred in getUserPlaylistIDS: $ex")
         List.empty
     }
   }
@@ -101,15 +100,22 @@ object SpotifyApi {
   def getSeveralArtists(ids: Iterable[String]): Option[Set[Artist]] = {
     if (ids.size > 50)
       throw new Exception("More than 50 ids given to getSeveralArtists!")
-
-    val idQuery = "?ids=" + ids.mkString("%2C")
-    val link: String = baseUrl + "/artists" + idQuery
-    val json = getJsonDataWithLink(link)
-    val artists = getJsonDataWithLink(link)("artists")
-      .arr
-      .map(parseArtist(_))
-      .toSet
-    if (artists.forall(_.isDefined)) Some(artists.map(_.get)) else None
+    try {
+      val idQuery = "?ids=" + ids.mkString("%2C")
+      val link: String = baseUrl + "/artists" + idQuery
+      val artists = getJsonDataWithLink(link)("artists")
+        .arr
+        .map(parseArtist)
+        .filter(_.isDefined)
+        .map(_.get)
+        .toSet
+      Some(artists)
+    } catch {
+      case ex: requests.RequestFailedException => printException(ex, "getSeveralArtists failed")
+        None
+      case ex => println(s"An unexpected error occurred in getSeveralArtists: $ex")
+        None
+    }
   }
 
   def getSeveralAlbums(ids: Iterable[String]): Set[Album] = {
@@ -119,17 +125,16 @@ object SpotifyApi {
     try {
       val idQuery = "?ids=" + ids.mkString("%2C")
       val link: String = baseUrl + "/albums" + idQuery
-      val json = getJsonDataWithLink(link)
       getJsonDataWithLink(link)("albums")
         .arr
-        .map(parseAlbum(_))
+        .map(parseAlbum)
         .filter(_.isDefined)
         .map(_.get)
         .toSet
     } catch {
       case ex: requests.RequestFailedException => printException(ex, "getPlaylistTracks failed")
         Set.empty
-      case ex => println(s"An unexpected error occurred in getPlaylistTracks: $ex")
+      case ex => println(s"An unexpected error occurred in getSeveralAlbums: $ex")
         Set.empty
     }
   }
@@ -144,7 +149,7 @@ object SpotifyApi {
         .continually(nextLink.isDefined)
         .takeWhile(identity)
         .flatMap { _ =>
-          var json = getJsonDataWithLink(nextLink.get)
+          val json = getJsonDataWithLink(nextLink.get)
           nextLink = json("next").strOpt
           json("items").arr.map(parsePlaylistTrack)
         }
@@ -166,7 +171,7 @@ object SpotifyApi {
         .continually(nextLink.isDefined)
         .takeWhile(identity)
         .flatMap { _ =>
-          var json = getJsonDataWithLink(nextLink.get)
+          val json = getJsonDataWithLink(nextLink.get)
           nextLink = json("next").strOpt
           json("items").arr.map(parseAlbumTrack(_, id))
         }
@@ -174,9 +179,9 @@ object SpotifyApi {
         .map(_.get)
         .toList
     } catch {
-      case ex: requests.RequestFailedException => printException(ex, "getSeveralAlbums failed")
+      case ex: requests.RequestFailedException => printException(ex, "getAlbumTracks failed")
         List.empty
-      case ex => println(s"An unexpected error occurred in getSeveralAlbums: $ex")
+      case ex => println(s"An unexpected error occurred in getAlbumTracks: $ex")
         List.empty
     }
   }

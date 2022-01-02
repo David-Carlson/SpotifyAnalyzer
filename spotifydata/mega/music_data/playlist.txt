@@ -1,0 +1,36 @@
+"23J8adnR9Jf0upwM6DNif7"|"Pop n Lock"|""|"doctorsalt"|true|0|28
+"3BmIfJ3stzLIcLR1yUe1U0"|"Instrumental"|""|"nathanthemighty"|true|0|24
+"2MqqiXvX6dxQiAUkurkOis"|"Hack the Planet"|""|"nathanthemighty"|true|0|30
+"5EAzGmVJuaPw38ebPJXKU2"|"Nord fair"|""|"nathanthemighty"|true|0|18
+"6WTW0uz8xZtPiIBDvLevZo"|"Mixed Result"|""|"nathanthemighty"|true|0|20
+"3gkNnFG3jZE4vJt3Wbz3Dm"|"Various Artists – Rocket League (Official Game Soundtrack)"|""|"gangstergandhi"|true|0|11
+"34aHnmTzBWKhfgnE13gZJ3"|"And The Kids — Turn To Each Other"|""|"gangstergandhi"|true|0|11
+"1ocCcWXmry3RVgJUmEC33R"|"Hero we need"|""|"gangstergandhi"|true|0|28
+"1DQ0pswyly3lFZzg9w7ZhZ"|"Liked from Radio"|""|"doctorsalt"|false|0|12
+"4MOhchyStrhB4W1jeRS3aS"|"High pitch"|""|"gangstergandhi"|true|0|17
+"57K1SnVf3l6aCz9OUgj33H"|"Maroon Favorites"|""|"1263300112"|true|0|21
+"4wvS5pj6oDSczy0BZrvAyl"|"New Playlist"|""|"nathanthemighty"|true|0|15
+"2G8eBVtQL1Hvtz9mWIJHaR"|"Console playlist"|"Hopefully this wokrs"|"doctorsalt"|true|0|2
+"4tPOsR3l5C9yg1spXeTuhL"|"Morning"|""|"1263300112"|true|0|15
+"2vJcVvU6Sigk8YI3FTPpGL"|"How do hipster"|""|"gangstergandhi"|true|0|18
+"6uENnQ7yDZHWL5XMX2SPmb"|"Club Life, Vol. 3 - Stockholm (Spotify Exclusive)"|""|"gangstergandhi"|true|0|16
+"6R24aqLlCM1vOZJef9WDn6"|"Blues"|""|"1263300112"|true|0|16
+"4wb5dzzGKPRRhkKu9heMKB"|"Just Listen"|""|"1263300112"|true|1|23
+"0Jp2GbcLfcj6JR4EJjj11U"|"Emotion"|""|"doctorsalt"|true|0|11
+"614mfuHosbP0GAWUqMlbBW"|"HelpppWhatAreTheySaying"|""|"gangstergandhi"|true|0|16
+"6jC3qiKLDDOvdspGbiFSvQ"|"Calm"|""|"nathanthemighty"|true|0|17
+"5rdxOggiTZqnYNHzqtaUpz"|"Workout"|""|"doctorsalt"|true|0|9
+"0w3WDVNgylBlz0lh4E1Fb7"|"aaaa"|""|"gangstergandhi"|true|0|18
+"5YecH1VNY2sgCHjaTmjkYZ"|"Vapor"|""|"doctorsalt"|true|0|11
+"0QWOrUlRFLue9dEWcbnr5E"|"Nord fowl"|""|"nathanthemighty"|true|0|19
+"1B80AOTkEMnJcc7YiZk3fv"|"Beast"|""|"doctorsalt"|true|0|18
+"4tLf5k6JKJPEhI4g8s7COs"|"Epic"|""|"gangstergandhi"|true|0|12
+"2FfZN61bpO8Y2t0bY02a0X"|"calm"|""|"doctorsalt"|true|0|16
+"0q07Q6XjBXlLXe0xX8xUBA"|"Lofie Beats"|"Doc, thank you for an adventure filled with wonderful memories. This music takes me back to our many hours traveling across the indescribably beautiful landscape of New Zealand. Cheers!"|"1263300112"|true|0|22
+"2vKuJppcVX40oRKuK5T3A2"|"know music"|""|"doctorsalt"|true|1|24
+"0gu8vKuWbWqPnU7C0YACym"|"Club Background"|""|"nathanthemighty"|true|0|10
+"4yzxqyQZsd3DmF4J7YlnCL"|"Retrograde"|""|"doctorsalt"|true|0|12
+"3XDM55F826gwInezuCa2KL"|"Wedding"|""|"doctorsalt"|true|1|10
+"44XKJ6MgFFdh0G5rg1lYg1"|"Boats"|""|"gangstergandhi"|true|0|11
+"5xeqW3vj4hOyPDDpjN0W1Y"|"High Note"|""|"nathanthemighty"|true|0|10
+"12kKV8XPabopM5dlG7Ap5I"|"Tension"|""|"nathanthemighty"|true|0|11

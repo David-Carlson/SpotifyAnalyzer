@@ -1,0 +1,227 @@
+Starting Collection
+
+Getting genre seeds...
+
+Getting playlists from 7 users...
+There are 309 playlists before filtering
+Retrieving playlists 0/309
+Retrieving playlists 10/309
+Retrieving playlists 20/309
+Retrieving playlists 30/309
+Retrieving playlists 40/309
+Retrieving playlists 50/309
+Retrieving playlists 60/309
+Retrieving playlists 70/309
+Retrieving playlists 80/309
+Retrieving playlists 90/309
+Retrieving playlists 100/309
+Retrieving playlists 110/309
+Retrieving playlists 120/309
+Retrieving playlists 130/309
+Retrieving playlists 140/309
+Retrieving playlists 150/309
+Retrieving playlists 160/309
+Retrieving playlists 170/309
+Retrieving playlists 180/309
+Retrieving playlists 190/309
+Retrieving playlists 200/309
+Retrieving playlists 210/309
+Retrieving playlists 220/309
+Retrieving playlists 230/309
+Retrieving playlists 240/309
+Retrieving playlists 250/309
+Retrieving playlists 260/309
+Retrieving playlists 270/309
+Retrieving playlists 280/309
+Retrieving playlists 290/309
+Retrieving playlists 300/309
+After filtering, there are 109 playlists
+
+Getting tracks from 109 playlists...
+
+Getting Albums... 
+Retrieving albums 0/1361
+Retrieving albums 20/1361
+Retrieving albums 40/1361
+Retrieving albums 60/1361
+Retrieving albums 80/1361
+Retrieving albums 100/1361
+Retrieving albums 120/1361
+Retrieving albums 140/1361
+Retrieving albums 160/1361
+Retrieving albums 180/1361
+Retrieving albums 200/1361
+Retrieving albums 220/1361
+Retrieving albums 240/1361
+Retrieving albums 260/1361
+Retrieving albums 280/1361
+Retrieving albums 300/1361
+Retrieving albums 320/1361
+Retrieving albums 340/1361
+Retrieving albums 360/1361
+Retrieving albums 380/1361
+Retrieving albums 400/1361
+Retrieving albums 420/1361
+Retrieving albums 440/1361
+Retrieving albums 460/1361
+Retrieving albums 480/1361
+Retrieving albums 500/1361
+Retrieving albums 520/1361
+Retrieving albums 540/1361
+Retrieving albums 560/1361
+Retrieving albums 580/1361
+Retrieving albums 600/1361
+Retrieving albums 620/1361
+Retrieving albums 640/1361
+Retrieving albums 660/1361
+Retrieving albums 680/1361
+Retrieving albums 700/1361
+Retrieving albums 720/1361
+Retrieving albums 740/1361
+Retrieving albums 760/1361
+Retrieving albums 780/1361
+Retrieving albums 800/1361
+Retrieving albums 820/1361
+Retrieving albums 840/1361
+Retrieving albums 860/1361
+Retrieving albums 880/1361
+Retrieving albums 900/1361
+Retrieving albums 920/1361
+Retrieving albums 940/1361
+Retrieving albums 960/1361
+Retrieving albums 980/1361
+Retrieving albums 1000/1361
+Retrieving albums 1020/1361
+Retrieving albums 1040/1361
+Retrieving albums 1060/1361
+Retrieving albums 1080/1361
+Retrieving albums 1100/1361
+Retrieving albums 1120/1361
+Retrieving albums 1140/1361
+Retrieving albums 1160/1361
+Retrieving albums 1180/1361
+Retrieving albums 1200/1361
+Retrieving albums 1220/1361
+Retrieving albums 1240/1361
+Retrieving albums 1260/1361
+Retrieving albums 1280/1361
+Retrieving albums 1300/1361
+Retrieving albums 1320/1361
+Retrieving albums 1340/1361
+Retrieving albums 1360/1361
+
+Getting approximately 1520 tracks...
+Retrieving tracks from Albums 0/1361
+Retrieving tracks from Albums 50/1361
+Retrieving tracks from Albums 100/1361
+Retrieving tracks from Albums 150/1361
+Retrieving tracks from Albums 200/1361
+Retrieving tracks from Albums 250/1361
+Retrieving tracks from Albums 300/1361
+Retrieving tracks from Albums 350/1361
+Retrieving tracks from Albums 400/1361
+Retrieving tracks from Albums 450/1361
+Retrieving tracks from Albums 500/1361
+Retrieving tracks from Albums 550/1361
+Retrieving tracks from Albums 600/1361
+Retrieving tracks from Albums 650/1361
+Retrieving tracks from Albums 700/1361
+Retrieving tracks from Albums 750/1361
+Retrieving tracks from Albums 800/1361
+Retrieving tracks from Albums 850/1361
+Retrieving tracks from Albums 900/1361
+Retrieving tracks from Albums 950/1361
+Retrieving tracks from Albums 1000/1361
+Retrieving tracks from Albums 1050/1361
+Retrieving tracks from Albums 1100/1361
+Retrieving tracks from Albums 1150/1361
+Retrieving tracks from Albums 1200/1361
+Retrieving tracks from Albums 1250/1361
+
+Getting 1382 artists...
+Retrieving artists 0/1382
+Retrieving artists 20/1382
+Retrieving artists 40/1382
+Retrieving artists 60/1382
+Retrieving artists 80/1382
+Retrieving artists 100/1382
+Retrieving artists 120/1382
+Retrieving artists 140/1382
+Retrieving artists 160/1382
+Retrieving artists 180/1382
+Retrieving artists 200/1382
+Retrieving artists 220/1382
+Retrieving artists 240/1382
+Retrieving artists 260/1382
+Retrieving artists 280/1382
+Retrieving artists 300/1382
+Retrieving artists 320/1382
+Retrieving artists 340/1382
+Retrieving artists 360/1382
+Retrieving artists 380/1382
+Retrieving artists 400/1382
+Retrieving artists 420/1382
+Retrieving artists 440/1382
+Retrieving artists 460/1382
+Retrieving artists 480/1382
+Retrieving artists 500/1382
+Retrieving artists 520/1382
+Retrieving artists 540/1382
+Retrieving artists 560/1382
+Retrieving artists 580/1382
+Retrieving artists 600/1382
+Retrieving artists 620/1382
+Retrieving artists 640/1382
+Retrieving artists 660/1382
+Retrieving artists 680/1382
+Retrieving artists 700/1382
+Retrieving artists 720/1382
+Retrieving artists 740/1382
+Retrieving artists 760/1382
+Retrieving artists 780/1382
+Retrieving artists 800/1382
+Retrieving artists 820/1382
+Retrieving artists 840/1382
+Retrieving artists 860/1382
+Retrieving artists 880/1382
+Retrieving artists 900/1382
+Retrieving artists 920/1382
+Retrieving artists 940/1382
+Retrieving artists 960/1382
+Retrieving artists 980/1382
+Retrieving artists 1000/1382
+Retrieving artists 1020/1382
+Retrieving artists 1040/1382
+Retrieving artists 1060/1382
+Retrieving artists 1080/1382
+Retrieving artists 1100/1382
+Retrieving artists 1120/1382
+Retrieving artists 1140/1382
+Retrieving artists 1160/1382
+Retrieving artists 1180/1382
+Retrieving artists 1200/1382
+Retrieving artists 1220/1382
+Retrieving artists 1240/1382
+Retrieving artists 1260/1382
+Retrieving artists 1280/1382
+Retrieving artists 1300/1382
+Retrieving artists 1320/1382
+Retrieving artists 1340/1382
+Retrieving artists 1360/1382
+Retrieving artists 1380/1382
+
+Web Crawling complete!
+----------------------
+Playlists: 109
+
+Artists: 1362
+
+Albums: 1341
+
+Tracks: 15199
+
+Genres: 999
+
+Collection took 422.5579647 seconds
+Writing music data for doctorsalt, gangstergandhi, 1263300112, nathanthemighty, 1214547033, 1249049206, 1215824032
+Writing to file took 1.1176241 seconds
