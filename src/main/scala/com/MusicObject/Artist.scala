@@ -17,7 +17,7 @@ object Artist {
     artist match {
       case Artist(id, name, genres, popularity, followers) =>
         val idstr = quote(id)
-        val namestr = quote(id)
+        val namestr = quote(name)
         s"$idstr|$namestr|$popularity|$followers"
     }
   }

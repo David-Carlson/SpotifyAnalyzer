@@ -33,8 +33,9 @@ object DB {
   }
   def main(args: Array[String]): Unit = {
     val crawlerName = "large-database"
+    val spark = getSparkSession()
 
-    println(allTablesExist())
+    Analysis.getTrackSuggestions("doctorsalt")
 
 //    setupDatabase(crawlerName)
 

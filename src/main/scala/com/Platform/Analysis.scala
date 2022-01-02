@@ -53,17 +53,34 @@ object Analysis {
   def getTrackSuggestions(user_id: String): Unit = {
     val spark = DB.getSparkSession()
     println(s"The top genres that $user_id is missing out on...")
-    val genres = s"(SELECT g.name genreNames " +
+    val genres = s"(SELECT g.id, g.name" +
       s" FROM playlist p " +
       s" JOIN playlist_tracks pt ON p.id = pt.id " +
       s" JOIN track_artists ta ON pt.track_id = ta.id " +
       s" JOIN artist_genres ag ON ta.artist_id = ag.id " +
       s" JOIN genre g on ag.genre_id = g.id " +
       s" WHERE p.owner_id !='$user_id' " +
-      s" GROUP BY g.name " +
+      s" GROUP BY g.id, g.name" +
       s" ORDER BY COUNT(*) DESC " +
       s" LIMIT 10)"
-    spark.sql(genres).show(10, truncate = false)
+    val df = spark.sql(genres)
+    df.createOrReplaceTempView("missing_genres")
+    spark.sql("SELECT t.name, mg.name FROM missing_genres mg" +
+      " JOIN artist_genres ag ON mg.id = ag.genre_id" +
+      " JOIN track_artists ta ON ag.id = ta.artist_id" +
+      " JOIN track t on ta.id = t.id" +
+      " JOIN artist a on ta.artist_id = a.id" +
+      " WHERE t.popularity > 0" +
+      " ORDER BY RAND()" +
+      " LIMIT 10").show()
+
+    // g.id to artist_genres
+    // to album_tracks
+    // to tracks
+    // sort by popularity?
+  }
+  def profanityByUser(): Unit = {
+
   }
 
   def getAvgTrackPopularityByUser(): Unit = {
