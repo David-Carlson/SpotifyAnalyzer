@@ -7,6 +7,8 @@ import com.Platform.TableInfo._
 import com.Platform.PasswordHash.validatePassword
 import com.Platform.RowObjects.UserInfo
 
+import scala.collection.JavaConversions.asScalaBuffer
+
 object DB {
   private var sparkSession: SparkSession = null
 
@@ -24,30 +26,18 @@ object DB {
         .getOrCreate()
       sparkSession.conf.set("hive.exec.dynamic.partition.mode", "nonstrict")
       sparkSession.sparkContext.setLogLevel("ERROR")
+      sparkSession.sql("Create database if not exists spotify")
+      sparkSession.sql("use spotify")
     }
     sparkSession
   }
   def main(args: Array[String]): Unit = {
     val crawlerName = "large-database"
 
-    val user = validateLogin("doctorsalt", "doctorsalts")
-    if (user.isDefined)
-      println(user)
+    println(allTablesExist())
 
 //    setupDatabase(crawlerName)
 
-//    println(validatePassword("admin", res(1)))
-//    println(spark.sql("SELECT * FROM user_password ").show())
-//    val paths = os.pwd / "spotifydata"
-//    println(paths.baseName)
-//    val startTime = System.nanoTime()
-//
-
-//    Analysis.getAvgTrackPopularityByUser()
-//    (1 to 10).foreach(_ => Analysis.getAvgTrackPopularityByPlaylist("doctorsalt"))
-//
-
-//    Analysis.averageAlbumTrackLength()
 
 //    val endTime  = (System.nanoTime()- startTime) / 1e9d
 //    println(s"$endTime seconds")
@@ -58,27 +48,17 @@ object DB {
     os.list(os.pwd / "spotifydata").foreach(p => println(p.baseName))
   }
 
-  def sparkTest(): Unit = {
+  def allTablesExist(): Boolean = {
     val spark = getSparkSession()
-    val album_tracks = spark.sqlContext.table("album_tracks")
-    val album = spark.sqlContext.table("album")
-    val track = spark.sqlContext.table("track")
-//    album
-//      .join(album_tracks, "id")
-//      .join(track, album_tracks("track_id") === track("id"))
-//      .show()
-    spark.sql("SELECT a.name, a.tracks, COUNT(*) FROM album a JOIN album_tracks at ON a.id=at.id " +
-      "JOIN track t on t.id=at.track_id GROUP BY a.name, a.tracks").show()
-
-
-//    df.select("name", "track_number").filter("track_number > 30").show()
-//    println(df.filter("track_number > 30").count())
-    album.printSchema()
+//    TableInfo.tableNames.foreach(t => println(s"$t ${spark.catalog.tableExists(t)}"))
+    TableInfo.tableNames.forall(t => spark.catalog.tableExists("spotify." + t))
   }
+
 
   def setupDatabase(crawlerName: String): Unit = {
     // Add other tables, login tables
     val spark = getSparkSession()
+
 
     tableNames.foreach(dropTable)
     createAllTables()
@@ -110,6 +90,10 @@ object DB {
   def dropTable(fileAndTableName: String): Unit = {
     val spark = getSparkSession()
     spark.sql(s"DROP table IF EXISTS $fileAndTableName")
+  }
+
+  def dropAllTables(): Unit = {
+    tableNames.foreach(dropTable)
   }
 
   def inputFileIntoTable(crawlerName: String, fileAndTableName: String): Unit = {
@@ -173,13 +157,20 @@ object DB {
     validateLogin(username, password)
   }
 
-  def updatePassword(username: String, password: String): Option[UserInfo] = {
+  def updatePassword(user: UserInfo, newPassword: String): Option[UserInfo] = {
+    val username = user.id
     val spark = getSparkSession()
-    val hash = PasswordHash.createSaltedHash(password)
-    spark.sql(s"UPDATE user_password SET password='$hash' WHERE username='$username")
-    validateLogin(username, password)
+    val newHash = PasswordHash.createSaltedHash(newPassword)
+    import spark.implicits._
+//    spark.sql(s"UPDATE user_password SET password='$hash' WHERE username='$username'")
+    val userVals = spark.sql(s"SELECT * FROM user_password WHERE id != '$username'")
+      .as[UserInfo].map(UserInfo.toInsertString).collectAsList().mkString(", ")
+//    users
+    val userValues = userVals + ", " + UserInfo.toInsertString(UserInfo(username, newHash, user.is_admin))
+    spark.sql("TRUNCATE TABLE user_password")
+    spark.sql(s"INSERT INTO TABLE user_password VALUES $userValues")
+    validateLogin(username, newPassword)
   }
-
 
   def suppressLogs(params: List[String]): Unit = {
     // Levels: all, debug, error, fatal, info, off, trace, trace_int, warn

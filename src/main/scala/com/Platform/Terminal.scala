@@ -15,6 +15,10 @@ object Terminal {
   def isAdmin = (logged_in_user.get).is_admin
 
   def main(args: Array[String]): Unit = {
+//    logged_in_user = Some(UserInfo("admin", "admin", true))
+//    DB.dropAllTables()
+    if (!DB.allTablesExist())
+      loadDatabase()
     mainMenu()
   }
 
@@ -55,11 +59,13 @@ object Terminal {
       println(s"Spotify Analyzer - User Portal - ${DataWriter.version}")
       println()
       println("1) Find personal patterns in the music archive")
-      println("2) Logout")
+      println("2) Change password")
+      println("3) Logout")
       println("0) Quit the program")
-      IO.readInt(0, 2) match {
+      IO.readInt(0, 3) match {
         case 1 => ()
-        case 2 => loginOrLogout(); return
+        case 2 => changePassword()
+        case 3 => loginOrLogout(); return
         case 0 => exit
         case _ => println("Didn't understand command")
       }
@@ -172,9 +178,10 @@ object Terminal {
   }
   def changePassword(): Unit = {
     val newPassword = IO.getNewPassword(getHash)
-    logged_in_user = DB.createUser(getUserID, newPassword)
+    logged_in_user = DB.updatePassword(logged_in_user.get, newPassword)
     if (logged_in_user.isDefined)
       println("Password change successful")
+
   }
 
 }

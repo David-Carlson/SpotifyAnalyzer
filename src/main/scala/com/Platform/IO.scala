@@ -76,7 +76,7 @@ object IO {
           name = ""
         }
       }
-    } while(name != "")
+    } while(name.isEmpty)
     name
   }
 

@@ -15,7 +15,7 @@ object TableInfo {
   // Add partitions and clusters
   val tableSchemas = List(
     // Genre
-    "CREATE TABLE IF NOT EXISTS genre (" +
+    "CREATE TABLE IF NOT EXISTS spotify.genre (" +
     "id INT," +
     "name VARCHAR(150)) " +
 
@@ -23,7 +23,7 @@ object TableInfo {
     "STORED AS orc",
 
   // Album
-    "CREATE TABLE IF NOT EXISTS album (" +
+    "CREATE TABLE IF NOT EXISTS spotify.album (" +
       "id VARCHAR(50)," +
       "name VARCHAR(200)," +
       "tracks INT," +
@@ -33,7 +33,7 @@ object TableInfo {
       "STORED AS orc",
 
     // Artist
-    "CREATE TABLE IF NOT EXISTS artist (" +
+    "CREATE TABLE IF NOT EXISTS spotify.artist (" +
       "id VARCHAR(50)," +
       "name VARCHAR(200)," +
       "popularity INT," +
@@ -43,7 +43,7 @@ object TableInfo {
       "STORED AS orc",
 
     // Playlist
-    "CREATE TABLE IF NOT EXISTS playlist (" +
+    "CREATE TABLE IF NOT EXISTS spotify.playlist (" +
       "id VARCHAR(50)," +
       "name VARCHAR(200)," +
       "desc VARCHAR(300)," +
@@ -55,7 +55,7 @@ object TableInfo {
       "STORED AS orc",
 
     // Track
-    "CREATE TABLE IF NOT EXISTS track (" +
+    "CREATE TABLE IF NOT EXISTS spotify.track (" +
       "id VARCHAR(50)," +
       "name VARCHAR(200)," +
       "album_id VARCHAR(50)," +
@@ -70,7 +70,7 @@ object TableInfo {
       "STORED AS orc",
 
     // Album Artists
-    "CREATE TABLE IF NOT EXISTS album_artists (" +
+    "CREATE TABLE IF NOT EXISTS spotify.album_artists (" +
       "id VARCHAR(50)," +
       "artist_id VARCHAR(50))" +
 
@@ -78,7 +78,7 @@ object TableInfo {
       "STORED AS orc",
 
     // Album Tracks
-    "CREATE TABLE IF NOT EXISTS album_tracks (" +
+    "CREATE TABLE IF NOT EXISTS spotify.album_tracks (" +
       "id VARCHAR(50)," +
       "track_id VARCHAR(50))" +
       "clustered by (track_id) into 20 buckets " +
@@ -87,7 +87,7 @@ object TableInfo {
       "STORED AS orc",
 
     // Artist Genres
-    "CREATE TABLE IF NOT EXISTS artist_genres (" +
+    "CREATE TABLE IF NOT EXISTS spotify.artist_genres (" +
       "id VARCHAR(50)," +
       "genre_id VARCHAR(50))" +
 
@@ -95,7 +95,7 @@ object TableInfo {
       "STORED AS orc",
 
     // Owner
-    "CREATE TABLE IF NOT EXISTS owner (" +
+    "CREATE TABLE IF NOT EXISTS spotify.owner (" +
       "id VARCHAR(50)," +
       "name VARCHAR(50))" +
 
@@ -103,7 +103,7 @@ object TableInfo {
       "STORED AS orc",
 
     // User Password
-    "CREATE TABLE IF NOT EXISTS user_password (" +
+    "CREATE TABLE IF NOT EXISTS spotify.user_password (" +
       "id VARCHAR(50)," +
       "password VARCHAR(200), " +
       "is_admin BOOLEAN)" +
@@ -112,7 +112,7 @@ object TableInfo {
       "STORED AS orc",
 
     // Playlist Tracks
-    "CREATE TABLE IF NOT EXISTS playlist_tracks (" +
+    "CREATE TABLE IF NOT EXISTS spotify.playlist_tracks (" +
       "id VARCHAR(50)," +
       "track_id VARCHAR(50))" +
       "clustered by (track_id) into 20 buckets " +
@@ -121,7 +121,7 @@ object TableInfo {
       "STORED AS orc",
 
     // Track Artists
-    "CREATE TABLE IF NOT EXISTS track_artists (" +
+    "CREATE TABLE IF NOT EXISTS spotify.track_artists (" +
       "id VARCHAR(50)," +
       "artist_id VARCHAR(50))" +
 
