@@ -1,0 +1,16 @@
+Music supplied by users  : doctorsalt
+Crawler Version          : 2.1.0-140e3697215eb59614dfdcac5b5cc76f
+Crawled by robot         : me
+Number of API Requests   : 75
+
+Number of Playlists      : 2
+Number of Albums         : 13
+Number of Artists        : 21
+Number of Tracks         : 269
+Number of Genres         : 159
+
+Allowed playlist sizes   : Between 3 and 10
+Playlists taken per user : 2
+Time to scrape data      : 18.192763 seconds
+Time to write data       : 0.1252937 seconds
+Created                  : 2022-01-03T09:45:19.799

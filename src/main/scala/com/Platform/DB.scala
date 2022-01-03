@@ -17,7 +17,7 @@ object DB {
   def getSparkSession(): SparkSession = {
     if (sparkSession == null) {
       println("Creating SparkSession")
-      suppressLogs(List("org", "akka"))
+      suppressLogs(List("org", "akka", "org.apache.spark", "org.spark-project"))
       System.setProperty("hadoop.home.dir", "C:\\hadoop")
       sparkSession = SparkSession
         .builder
