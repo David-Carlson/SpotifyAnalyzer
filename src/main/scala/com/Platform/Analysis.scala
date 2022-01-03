@@ -2,11 +2,30 @@ package com.Platform
 
 import org.apache.spark.sql.DataFrame
 import com.Platform.DB
+import com.Platform.DB.getSparkSession
 import org.apache.spark
 import org.apache.spark.SparkContext._
 import org.apache.spark.SparkContext
 
+import scala.collection.JavaConversions.collectionAsScalaIterable
+
 object Analysis {
+  def getArchiveStats(): Unit = {
+    val spark = getSparkSession()
+    import spark.implicits._
+    val playlists = spark.sql("SELECT COUNT(DISTINCT(id)) trackCount FROM playlist").collect()(0).getLong(0)
+    val albums = spark.sql("SELECT COUNT(*) trackCount FROM album").collect()(0).getLong(0)
+    val artists = spark.sql("SELECT COUNT(*) trackCount FROM artist").collect()(0).getLong(0)
+    val tracks = spark.sql("SELECT COUNT(*) trackCount FROM track").collect()(0).getLong(0)
+    val genres = spark.sql("SELECT COUNT(*) trackCount FROM genre").collect()(0).getLong(0)
+    println("Represented in the loaded archive: \n")
+    println(s"\tPlaylists: $playlists")
+    println(s"\talbums: $albums")
+    println(s"\tartists: $artists")
+    println(s"\ttracks: $tracks")
+    println(s"\tgenres: $genres")
+    println()
+  }
 
   def averageAlbumTrackLength(): Unit = {
     val spark = DB.getSparkSession()
@@ -52,7 +71,7 @@ object Analysis {
 
   def getTrackSuggestions(user_id: String): Unit = {
     val spark = DB.getSparkSession()
-    println(s"The top genres that $user_id is missing out on...")
+    println(s"Finding tracks to fill your musical gaps")
     val genres = s"(SELECT g.id, g.name" +
       s" FROM playlist p " +
       s" JOIN playlist_tracks pt ON p.id = pt.id " +
@@ -65,23 +84,18 @@ object Analysis {
       s" LIMIT 10)"
     val df = spark.sql(genres)
     df.createOrReplaceTempView("missing_genres")
-    spark.sql("SELECT t.name, mg.name FROM missing_genres mg" +
+    spark.sql("SELECT t.name, a.name artistName, mg.name genreName FROM missing_genres mg" +
       " JOIN artist_genres ag ON mg.id = ag.genre_id" +
       " JOIN track_artists ta ON ag.id = ta.artist_id" +
       " JOIN track t on ta.id = t.id" +
       " JOIN artist a on ta.artist_id = a.id" +
       " WHERE t.popularity > 0" +
       " ORDER BY RAND()" +
-      " LIMIT 10").show()
-
-    // g.id to artist_genres
-    // to album_tracks
-    // to tracks
-    // sort by popularity?
+      " LIMIT 10").show(truncate = false)
   }
-  def profanityByUser(): Unit = {
-
-  }
+//  def profanityByUser(): Unit = {
+//
+//  }
 
   def getAvgTrackPopularityByUser(): Unit = {
     val spark = DB.getSparkSession()
@@ -106,7 +120,7 @@ object Analysis {
       s" Join owner o ON o.id = p.owner_id " +
       s" WHERE t.popularity > 0 " + where +
       s" GROUP BY p.name, o.name " +
-      s" ORDER BY Round(AVG(t.popularity), 0) DESC LIMIT 20").show(truncate = false)
+      s" ORDER BY Round(AVG(t.popularity), 0) DESC LIMIT 10").show(truncate = false)
   }
 
   def printSimpleSchema(): Unit = {

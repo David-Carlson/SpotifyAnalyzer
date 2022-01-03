@@ -1,6 +1,6 @@
 package com.Platform
 import com.Crawler.DataWriter
-import com.Platform.Analysis.{averageAlbumTrackLength, getAvgTrackPopularityByPlaylist}
+import com.Platform.Analysis._
 import com.Platform.DB.{createUser, getSparkSession, setupDatabase, usernameIsFree}
 import com.Platform.RowObjects.UserInfo
 
@@ -15,8 +15,6 @@ object Terminal {
   def isAdmin = (logged_in_user.get).is_admin
 
   def main(args: Array[String]): Unit = {
-//    logged_in_user = Some(UserInfo("admin", "admin", true))
-//    DB.dropAllTables()
     if (!DB.allTablesExist())
       loadDatabase()
     mainMenu()
@@ -62,7 +60,7 @@ object Terminal {
       println("3) Logout")
       println("0) Quit the program")
       IO.readInt(0, 3) match {
-        case 1 => ()
+        case 1 => runSpecificAnalysis()
         case 2 => changePassword()
         case 3 => loginOrLogout(); return
         case 0 => exit
@@ -94,11 +92,51 @@ object Terminal {
   }
 
   def runGeneralAnalysis(): Unit = {
-    averageAlbumTrackLength()
+    while(true) {
+      println(s"General Analysis")
+      println()
+      println("1) List Archive information")
+      println("2) Song length by album")
+      println("3) Track popularity by user")
+      println("4) Track popularity by playlist")
+      println("5) Print simple schemas")
+      println("6) Return to previous menu")
+      println("0) Quit the program")
+      IO.readInt(0, 6) match {
+        case 1 => getArchiveStats()
+        case 2 => averageAlbumTrackLength();
+        case 3 => getAvgTrackPopularityByUser()
+        case 4 => getAvgTrackPopularityByPlaylist()
+        case 5 => printSimpleSchema()
+        case 6 => return
+        case 0 => exit
+        case _ => println("Didn't understand command")
+      }
+    }
   }
 
   def runSpecificAnalysis(): Unit = {
-    getAvgTrackPopularityByPlaylist(getUserID)
+    while(true) {
+      println(s"User Analysis")
+      println()
+      println("1) List Archive information")
+      println("2) Get my unique genres")
+      println("3) Find genres I'm lacking")
+      println("4) Suggest tracks to expand my musical vocabulary")
+      println("5) List my most popular playlists")
+      println("6) Return to previous menu")
+      println("0) Quit the program")
+      IO.readInt(0, 6) match {
+        case 1 => getArchiveStats()
+        case 2 => getUserGenres(getUserID);
+        case 3 => getMissingUserGenres(getUserID)
+        case 4 => getTrackSuggestions(getUserID)
+        case 5 => getAvgTrackPopularityByPlaylist(getUserID)
+        case 6 => return
+        case 0 => exit
+        case _ => println("Didn't understand command")
+      }
+    }
   }
 
   def createUserAccount(): Unit = {

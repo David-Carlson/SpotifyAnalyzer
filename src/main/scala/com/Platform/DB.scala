@@ -1,5 +1,6 @@
 package com.Platform
 
+import com.Platform.Analysis.getArchiveStats
 import org.apache.spark.SparkContext._
 import org.apache.spark.SparkContext
 import org.apache.spark.sql.{Encoders, SparkSession}
@@ -32,10 +33,11 @@ object DB {
     sparkSession
   }
   def main(args: Array[String]): Unit = {
-    val crawlerName = "large-database"
+//    val crawlerName = "large-database"
     val spark = getSparkSession()
 
-    Analysis.getTrackSuggestions("doctorsalt")
+//    Analysis.getTrackSuggestions("doctorsalt")
+    getArchiveStats()
 
 //    setupDatabase(crawlerName)
 
@@ -130,9 +132,6 @@ object DB {
 
   def validateLogin(username: String, givenPassword: String): Option[UserInfo] = {
     val spark = getSparkSession()
-    // TODO REMOVE
-    spark.sql("SELECT * FROM user_password").show(20)
-
     import spark.implicits._
     val res = spark.sql(s"SELECT * FROM user_password where id='$username'")
     if (res.isEmpty)

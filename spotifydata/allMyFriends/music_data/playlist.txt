@@ -5,7 +5,7 @@
 "3BmIfJ3stzLIcLR1yUe1U0"|"Instrumental"|""|"nathanthemighty"|true|0|24
 "5GoG9e8AZSPfk7Xj2oEqhR"|"Pitchfork 2021"|""|"1215824032"|true|0|10
 "2MqqiXvX6dxQiAUkurkOis"|"Hack the Planet"|""|"nathanthemighty"|true|0|30
-"0lWO8TFM27MC7YZhssJudW"|"chill the fuck out"|""|"1215824032"|true|0|6
+"0lWO8TFM27MC7YZhssJudW"|"chill out"|""|"1215824032"|true|0|6
 "5EAzGmVJuaPw38ebPJXKU2"|"Nord fair"|""|"nathanthemighty"|true|0|18
 "1TiDGgE1RYy0C1tNdo1YPM"|"The Fairer playlist"|""|"doctorsalt"|false|0|26
 "34aHnmTzBWKhfgnE13gZJ3"|"And The Kids — Turn To Each Other"|""|"gangstergandhi"|true|0|11
@@ -15,7 +15,7 @@
 "5CjWXfkxhhzKtkPAwT7P7N"|"dune"|""|"doctorsalt"|true|0|4
 "5mz3nUI2OYcqN7TPKB6qHh"|"Is that your happy dance big guy?"|""|"1214547033"|true|0|23
 "1kpxQqphVsvrDKXtP3vTqR"|"workout with Kids"|""|"1214547033"|true|0|33
-"1Hel0W0WeCvu8UsnDLWXxm"|"fuck man"|""|"1215824032"|true|3|15
+"1Hel0W0WeCvu8UsnDLWXxm"|"funk man"|""|"1215824032"|true|3|15
 "00LYW7ZWezJmLSiUEU7UpP"|"Cyberpunk Themes"|""|"nathanthemighty"|true|0|5
 "3xqJavmAcX78YSCrANECBP"|"Listen to Later"|""|"1215824032"|true|0|5
 "1EFCkwxQJWf72ad2NKBmeq"|"*~*Summer*~*"|""|"1249049206"|true|0|25
@@ -23,14 +23,14 @@
 "0Jp2GbcLfcj6JR4EJjj11U"|"Emotion"|""|"doctorsalt"|true|0|11
 "614mfuHosbP0GAWUqMlbBW"|"HelpppWhatAreTheySaying"|""|"gangstergandhi"|true|0|16
 "2mW0dsfQH71N50s6b8N3d3"|"Jan2020"|""|"1249049206"|true|0|26
-"3lJkH7Hkq0fPVcu7nkk27X"|"Never Fucking Give Up"|""|"1263300112"|true|0|8
+"3lJkH7Hkq0fPVcu7nkk27X"|"Never Give Up"|""|"1263300112"|true|0|8
 "0w3WDVNgylBlz0lh4E1Fb7"|"aaaa"|""|"gangstergandhi"|true|0|18
 "56G7tqvB5AFFRtYcuu1ODd"|"morning wood"|""|"1214547033"|true|0|52
 "3m7OH1kZH0JCyc9iIHaG5C"|"Wedding DJ"|""|"1215824032"|true|0|4
 "71bXeMvi3hP1LdOSOT6IUn"|"Snowboarding"|"It&#x27;s SSX time baby"|"nathanthemighty"|true|0|7
 "0q07Q6XjBXlLXe0xX8xUBA"|"Lofie Beats"|"Doc, thank you for an adventure filled with wonderful memories. This music takes me back to our many hours traveling across the indescribably beautiful landscape of New Zealand. Cheers!"|"1263300112"|true|0|22
 "2vKuJppcVX40oRKuK5T3A2"|"know music"|""|"doctorsalt"|true|1|24
-"2nrhtTLtV3JVwsH8QmZTSF"|"Dat Vape"|""|"nathanthemighty"|true|0|6
+"2nrhtTLtV3JVwsH8QmZTSF"|"Dat vaporwave"|""|"nathanthemighty"|true|0|6
 "3DpPDW8RXCG5AYsdQG1Dn8"|"winter 2018"|""|"1249049206"|true|0|22
 "6qJ2MUoTi1zmQLlGlExFmJ"|"Variety Pack #2"|""|"1249049206"|true|1|33
 "5Otbowfrev9LSXcGz2zn9Z"|"Liked from Radio"|""|"gangstergandhi"|true|0|52
@@ -89,7 +89,7 @@
 "0Mg8nRQhLnmpzmP4ABE2j1"|"Music I forgot about"|""|"1249049206"|true|0|25
 "0zTBwjwgPxuCAEgAbmilPJ"|"2 record 2?"|""|"1215824032"|true|0|8
 "3FgPywpjy63RZxBJ8V2Rnd"|"later"|""|"doctorsalt"|true|0|39
-"2nS6X4aQXuoydM0s9TCtoA"|"Less shit Christmas"|""|"gangstergandhi"|true|0|27
+"2nS6X4aQXuoydM0s9TCtoA"|"Less awful Christmas"|""|"gangstergandhi"|true|0|27
 "7MRmAuQsrL4Let5cX5wd36"|"32ft/sec"|""|"gangstergandhi"|true|0|31
 "6wvYPdtdegVdCduoyEfTL9"|"Summer 2021"|""|"1249049206"|true|0|18
 "4O6gjAHhlLSw02lEP3Ueek"|"Smokey Room"|""|"doctorsalt"|true|0|15
