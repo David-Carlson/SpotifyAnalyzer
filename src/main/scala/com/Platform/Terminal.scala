@@ -99,16 +99,18 @@ object Terminal {
       println("2) Song length by album")
       println("3) Track popularity by user")
       println("4) Track popularity by playlist")
-      println("5) Print simple schemas")
-      println("6) Return to previous menu")
+      println("5) Profanity usage by user")
+      println("6) Print simple schemas")
+      println("7) Return to previous menu")
       println("0) Quit the program")
-      IO.readInt(0, 6) match {
+      IO.readInt(0, 7) match {
         case 1 => getArchiveStats()
         case 2 => averageAlbumTrackLength();
         case 3 => getAvgTrackPopularityByUser()
         case 4 => getAvgTrackPopularityByPlaylist()
-        case 5 => printSimpleSchema()
-        case 6 => return
+        case 5 => profanityByUser()
+        case 6 => printSimpleSchema()
+        case 7 => return
         case 0 => exit
         case _ => println("Didn't understand command")
       }

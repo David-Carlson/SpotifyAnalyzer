@@ -93,9 +93,20 @@ object Analysis {
       " ORDER BY RAND()" +
       " LIMIT 10").show(truncate = false)
   }
-//  def profanityByUser(): Unit = {
-//
-//  }
+  def profanityByUser(): Unit = {
+    val spark = DB.getSparkSession()
+    println(s"Finding the number of explicit tracks...")
+    val genres = s"SELECT o.name, COUNT(*)" +
+      s" FROM playlist p " +
+      s" JOIN playlist_tracks pt ON p.id = pt.id " +
+      s" JOIN track t ON pt.track_id = t.id" +
+      s" Join owner o ON o.id = p.owner_id " +
+      s" WHERE t.explicit = true" +
+      s" GROUP BY o.name" +
+      s" ORDER BY COUNT(*) ASC"
+    val df = spark.sql(genres)
+    df.show()
+  }
 
   def getAvgTrackPopularityByUser(): Unit = {
     val spark = DB.getSparkSession()
